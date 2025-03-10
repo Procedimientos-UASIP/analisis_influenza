@@ -1,5 +1,6 @@
 # Alineamiento de lecturas contra base de datos
 
+
 ```bash
 mkdir ALINEAMIENTO && cd ALINEAMIENTO 
 ```
@@ -24,5 +25,33 @@ bwa-mem2 mem -t 14 ~/DATABASES/BWAMEM2/INFLUENZA/influenza_nucl_2024-11.fna read
 ```
 
 ```bash
-samtools merge all.sam paired.sam unpaired.sam && samtools view -S -b all.sam >all.bam && samtools sort all.sam >all_sorted.bam && rm all.sam paired.sam unpaired.sam 
+cd BWA/ALL_SEGMENTS_MAPPING 
 ```
+
+```bash
+samtools merge all.sam paired.sam unpaired.sam && samtools view -S -b all.sam >all.bam && samtools sort all.sam >all_sorted.bam && rm all.sam paired.sam unpaired.sam all.bam
+```
+
+
+
+
+```bash
+for i in {1..8}; do
+  echo "Procesando segmento $i"
+  samtools view ALL_SEGMENTS_MAPPING/all_sorted.bam |
+  grep -v "SA:" | 
+  grep "segmento_${i}" | 
+  awk '{ print $1"\t"length($10)"\t"$6 }' | 
+  awk '{ gsub(/[0-9]M/, "&", $3) }1' | 
+  awk '{ gsub(/[0-9][A-LN-Z]/, "", $3) }1'| 
+  awk '{ gsub(/M/, "\t", $3) }1' |
+  tr " " "\t" | 
+  awk '{ for(i=3;i<=NF;i++) t+=$i; { print $1, "\t", $2,"\t", t }; t=0 }' |
+  awk '{ if ( $3 >= $2*0.7) print $0 }' |
+  cut -f1 |
+  sort |
+  uniq | 
+  sed 's/ //' >S${i}/s${i}_lecturas.txt  
+done 
+```
+
