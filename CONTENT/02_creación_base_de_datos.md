@@ -20,7 +20,7 @@ Los códigos depositados a continuación son una resumen práctico del ***"PROCE
 6. Seleccionar "Nucleotide" y siguiente.
 7. Seleccionar "Download All Records" y siguiente.
 8. Seleccionar "Build custom" y agregar los campos "Accesion”, “GenBank Title”, “Host, Country”, y “Genotype”. Dichos campos aparecerán en el encabezado de cada secuencia.
-9. Dar clic en en Download y guardar como segment_1_nucl. 
+9. Dar clic en en Download y guardar como segment_1_nucl.
 10. El proceso de descarga se realizará para cada uno de los ocho segmentos, modificando el nombre del archivo final de acuerdo con el segmento que se haya descargado, teniendo en total 8 archivos fasta correspondientes a los ocho segmentos del virus de influenza. 
 
 ### LIMPIEZA DE INFORMACIÓN PARA CADA SEGMENTO
@@ -50,3 +50,30 @@ cat segment_1_nucl.fasta | \
   sed 's/^>\([^|]*\)/>segmento_1|\1/g' \
   >s1.fasta && rm segment_1_nucl.fasta 
 ```
+
+5. Unir archivos fasta. Procurar seguir la siguiente convención para el nombre del archivo resultante:
+
+&emsp; [nombre del virus]\_[tipo de secuencias]_[fecha de creación(Año-Mes)].fasta
+
+ ```bash
+cat s*.fasta >influenza_nucl_2024-oct.fasta 
+```
+
+6. Crear link simbólico en los lugares donde se indexará la base de datos.
+```bash
+cd ~/DATABASES/BLAST/INFLUENZA 
+ln -s ~/DATABASES/RAW/NCBI_VIRUS/INFLUENZA/influenza_nucl_2024-11.fna 
+
+cd ~/DATABASES/BWAMEM2/INFLUENZA 
+ln -s ~/DATABASES/RAW/NCBI_VIRUS/INFLUENZA/influenza_nucl_2024-11.fna 
+```
+
+7. Indexar bases de datos. Revisar estár en el ambiente conda donde se encuentren los programas para indexar las bases de datos.
+```bash
+cd ~/DATABASES/BLAST/INFLUENZA 
+makeblastdb –in influenza_nucl.fasta –dbtype nucl
+
+cd ~/DATABASES/BWAMEM2/INFLUENZA 
+bwa-mem2 index influenza_nucl.fasta 
+```
+
