@@ -6,7 +6,7 @@ Una base de datos sobre secuencias de virus de influenza aviar es una implementa
 
 Particularmente, la construcción de una base de datos para análisis de BLAST implica la organización de miles de secuencias que serán utilizadas por los algoritmos de BLAST para encontrar secuencias de referencias, usando alineamientos locales, que permitan identificar la naturaleza de las secuencias que sean analizadas. 
 
-Los códigos depositados a continuación son una resumen práctico del ***"PROCEDIMIENTO PARA LA CREACIÓN DE UNA BASE DE DATOS CON SECUENCIAS GENÓMICAS DE VIRUS DE INFLUENZA AVIAR PARA EJECUTAR BLAST Y BWA-MEM2"***, desarrollado e implementado por la UASIP-CENAPA-SENASICA.
+Los códigos depositados a continuación son una resumen práctico del ***"PROCEDIMIENTO PARA LA CREACIÓN DE UNA BASE DE DATOS CON SECUENCIAS GENÓMICAS DE VIRUS DE INFLUENZA AVIAR PARA EJECUTAR BLAST Y BWA-MEM2"*** <ins>(CPA-PD-XXXXX)</ins>, desarrollado e implementado por la UASIP-CENAPA-SENASICA.
 
 ## Código
  
@@ -23,7 +23,7 @@ Los códigos depositados a continuación son una resumen práctico del ***"PROCE
 9. Dar clic en en Download y guardar como segment_1_nucl.
 10. El proceso de descarga se realizará para cada uno de los ocho segmentos, modificando el nombre del archivo final de acuerdo con el segmento que se haya descargado, teniendo en total 8 archivos fasta correspondientes a los ocho segmentos del virus de influenza. 
 
-### LIMPIEZA DE INFORMACIÓN PARA CADA SEGMENTO
+### Limpieza de información en cada segmente
 
 1. Crear el sistema de archivos en el servidor para la base de datos
 ```bash
