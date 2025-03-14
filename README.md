@@ -7,7 +7,7 @@ Los scripts informáticos aquí depositados son utilizados por la Unidad de Aten
 1. Descarga de lecturas de la nube de Illumina
 2. [Preparación de base de datos de virus](https://github.com/Procedimientos-UASIP/analisis_influenza/blob/main/CONTENT/02_creaci%C3%B3n_base_de_datos.md)
 3. [Limpieza de lecturas](https://github.com/Procedimientos-UASIP/analisis_influenza/blob/main/CONTENT/03_limpieza_lecturas.md)
-4. [Alineamiento de lecturas](https://github.com/Procedimientos-UASIP/analisis_influenza/blob/main/CONTENT/04_alineamientos.md)
+4. [Alineamiento de lecturas](https://github.com/Procedimientos-UASIP/analisis_influenza/blob/main/CONTENT/04_alineamientos_y_ensamble.md)
 5. Ensamblaje de lecturas
 6. Análisis de patogenicidad
 7. Análisis filogenético.
