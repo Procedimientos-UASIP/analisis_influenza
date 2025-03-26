@@ -42,7 +42,7 @@ cd BWA/ALL_SEGMENTS_MAPPING
 
 5. Formatear los archivos sam resultantes en un archivo bam ordenado.
 ```bash
-samtools merge all.sam paired.sam unpaired.sam && samtools view -S -b all.sam >all.bam && samtools sort all.sam >all_sorted.bam && rm all.sam paired.sam unpaired.sam all.bam
+samtools merge all.sam paired.sam unpaired.sam && samtools view -S -b all.sam >all.bam && samtools sort all.bam >all_sorted.bam && rm all.sam paired.sam unpaired.sam all.bam
 ```
 6. Regresar al directorio BWA (Revisar ubicación con pwd)
 ```bash
