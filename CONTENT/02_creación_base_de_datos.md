@@ -1,4 +1,4 @@
-# CREACION DE BASE DE DATOS DE SECUENCIAS DE INFLUENZA
+# CREACIÓN DE BASE DE DATOS DE SECUENCIAS DE INFLUENZA
 
 Una base de datos es una colección organizada de datos, los cuales se almacenan y gestionan de manera estructurada, permitiendo el acceso y/o modificación de los datos contenidos. El principal propósito de una base de datos es facilitar el almacenamiento de grandes volúmenes de datos y permitir que los usuarios puedan trabajar con ellos de manera eficiente.
 
@@ -45,120 +45,57 @@ cd /backup/RAW/UASIP_DB_ALPHAINFLUENZAVIRUS_2025_04
 ```bash
 scp seg_1_nucl.fna.gz admcenapa@10.24.34.18:/backup/RAW/UASIP_DB_ALPHAINFLUENZAVIRUS_2025_04
 ```
-
-### Limpieza de información en cada segmente
-
-12.	En el servidor, corregir los encabezados de cada fasta. Para eso, se diseñó un script con los comandos necesarias. Sólo funcionará si se han seguido las instrucciones de este procedimiento al pie de la letra. Hacer un loop for para operar sobre todos los archivos:
+14. En el servidor, revisar que los archivos se hayan transferido:
 ```bash
-for i in {1..8}; do ~/bin/format_headers_db_virus.sh seg_"$i"_nucl.fasta.gz | pigz -9 -p20 -c >clean_seg_"$i"_nucl.fna.gz; done
+ls -la
 ```
-14.	Crear el sistema de archivos donde se construirán las bases de datos indexadas que serán utilizadas por BLAST y BWA-MEM2:
+
+### Limpieza de la información en encabezadps de secuencias de cada segmento
+
+15.	Corregir los encabezados de cada fasta. Para eso, se diseñó un script con los comandos necesarias. Sólo funcionará si se han seguido las instrucciones de este procedimiento al pie de la letra hasta este punto. Se incluye en un loop *for* para operar sobre todos los archivos transferidos:
+```bash
+for i in {1..8}; do ~/analisis_influenza/bin/format_headers_db_virus.sh seg_"$i"_nucl.fasta.gz | pigz -9 -p20 -c >clean_seg_"$i"_nucl.fna.gz; done
+```
+
+16.	Crear el sistema de archivos donde se construirán las bases de datos indexadas que serán utilizadas por BLAST y BWA-MEM2:
 ```bash
 mkdir –p /backup/DATABASES/UASIP/BLAST/INFLUENZA
 mkdir –p /backup/DATABASES/UASIP/BWAMEM2/INFLUENZA
 ```
 
-15.	Ingresar al directorio donde se construirá  la base de datos de influenza para BLAST:
+17.	Ingresar al directorio donde se construirá  la base de datos de influenza para BLAST:
 ```bash
 cd /backup/DATABASES/UASIP/BLAST/INFLUENZA
 ```
-16.	Crear un archivo temporal con todas las secuencias que conformarán la base de datos:
+
+18.	Crear un archivo temporal con todas las secuencias comprimidas que conformarán la base de datos:
 ```bash
 cat /backup/RAW/UASIP_DB_ALPHAINFLUENZAVIRUS_2025_04/clean_seg_* > influenza_db.fna.gz
 ```
 
-17.	Construir la base de datos. Se realiza una descompresión previa en tubería para no generar un archivo intermediario:
+19.	Construir la base de datos. Se realiza una descompresión previa en tubería para no generar un archivo intermediario:
 ```bash
 zcat influenza_db.fna.gz | makeblastdb -in - -dbtype nucl -out influenza_db -title influenza_db
 ```
 
-18.	Mover el archive temporal a la carpeta donde se construirá la base de datos de BWAMEM2:
+20.	Mover el archivo temporal a la carpeta donde se construirá la base de datos de BWAMEM2:
 ```bash
 mv influenza_db.fna.gz /backup/DATABASES/UASIP/BWAMEM2/INFLUENZA
 ```
 
-19.	Ingresar al directorio donde se construirá la base de datos de influenza para BWAMEM2:
+21.	Ingresar al directorio donde se construirá la base de datos de influenza para BWAMEM2:
 ```bash
 cd /backup/DATABASES/UASIP/BWAMEM2/INFLUENZA
 ```
 
-20.	BWAMEM2 no puede construir la base de datos en una tubería, por lo que hay que descomprimir el archivo fasta:
+22.	BWAMEM2 no puede construir la base de datos en una tubería, por lo que hay que descomprimir el archivo fasta:
 ```bash
 pigz -k -d -p 20 influenza_db.fna.gz
 ```
 
-21.	Armar la base de datos para BWAMEM2. Usar ambiente conda alineamiento. Puede tardar unos 15 minutos:
+21.	Armar la base de datos para BWAMEM2. Usar **ambiente conda alineamiento**. Puede tardar unos 15 minutos:
 ```bash
 conda activate alineamiento
 
 bwa-mem2 index influenza_db.fna
 ```
-
- 
-
-
-1. Acceder a la base de datos de NCBI Virus (https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/). 
-2. Seleccionar el icono "Search by virus" y escribir la palabra “Influenza A”. 
-3. Seleccionar el taxón identificado como "taxid:11320", ya que es el identificador taxonómico del virus de influenza aviar y sus subtipos. 
-4. Al desplegarse los resultados, identificar la sección Refine Results en la columna izquierda y buscar la opción identificada como "Segment". Seleccionar el segmento el cual se desea descargar (en nuestro caso del 1 al 8, uno a la vez).  
-5. Una vez seleccionado el segmento, se descarga seleccionando la opción "Download".  
-6. Seleccionar "Nucleotide" y siguiente.
-7. Seleccionar "Download All Records" y siguiente.
-8. Seleccionar "Build custom" y agregar los campos "Accesion”, “GenBank Title”, “Host, Country”, y “Genotype”. Dichos campos aparecerán en el encabezado de cada secuencia.
-9. Dar clic en en Download y guardar como segment_1_nucl.
-10. El proceso de descarga se realizará para cada uno de los ocho segmentos, modificando el nombre del archivo final de acuerdo con el segmento que se haya descargado, teniendo en total 8 archivos fasta correspondientes a los ocho segmentos del virus de influenza. 
-
-
-
-1. Crear el sistema de archivos en el servidor para la base de datos
-```bash
-mkdir –p ~/DATABASES/RAW/NCBI_VIRUS/INFLUENZA 
-```
-
-2. Crear el sistema de archivos donde se armará y depositará las bases de datos indexadas que serán utilizadas por BLAST y BWA-MEM2 
-```bash
-mkdir –p ~/DATABASES/BLAST/INFLUENZA 
-mkdir –p ~/DATABASES/BWAMEM2/INFLUENZA 
-```
-
-3. Subir los arvhivos al servidor
-```bash
-scp  segment_1_nucl.fasta [USUARIO@DIRECCION_IP]:/home/DATABASES/RAW/NCBI_VIRUS/INFLUENZA 
-```
-
-4. Corregir cada archivo fasta
-```bash
-cat segment_1_nucl.fasta | \
-  sed 's/ /_/g' | \
-  sed 's/))[^|]*|/))/g' | \
-  sed 's/Influenza_A_virus_//g'| \
-  sed 's/^>\([^|]*\)/>segmento_1|\1/g' \
-  >s1.fasta && rm segment_1_nucl.fasta 
-```
-
-5. Unir archivos fasta. Procurar seguir la siguiente convención para el nombre del archivo resultante:
-
-&emsp; [nombre del virus]\_[tipo de secuencias]_[fecha de creación(Año-Mes)].fasta
-
- ```bash
-cat s*.fasta >influenza_nucl_2024-oct.fasta 
-```
-
-6. Crear link simbólico en los lugares donde se indexará la base de datos.
-```bash
-cd ~/DATABASES/BLAST/INFLUENZA 
-ln -s ~/DATABASES/RAW/NCBI_VIRUS/INFLUENZA/influenza_nucl_2024-11.fna 
-
-cd ~/DATABASES/BWAMEM2/INFLUENZA 
-ln -s ~/DATABASES/RAW/NCBI_VIRUS/INFLUENZA/influenza_nucl_2024-11.fna 
-```
-
-7. Indexar bases de datos. Revisar estár en el ambiente conda donde se encuentren los programas para indexar las bases de datos.
-```bash
-cd ~/DATABASES/BLAST/INFLUENZA 
-makeblastdb –in influenza_nucl.fasta –dbtype nucl
-
-cd ~/DATABASES/BWAMEM2/INFLUENZA 
-bwa-mem2 index influenza_nucl.fasta 
-```
-
