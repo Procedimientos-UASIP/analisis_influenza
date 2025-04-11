@@ -3,7 +3,7 @@ El ensamblaje de secuencias genómicas utilizando las secuencias obtenidas por s
 
 Para cumplir lo anterior, es necesario realizar una evaluación inicial de todas las lecturas obtenidas por secuenciación masiva, en función de los valores de calidad asociado a cada posición de cada lectura. Posteriormente, se debe realizar una limpieza de las secuencias de acuerdo con la evaluación de los análisis obtenidos. Finalmente, es necesario una reevaluación de las calidades de las lecturas después de dicha limpieza para garantizar el mejoramiento de las calidades de secuencias en general.
 
-Los códigos depositados a continuación son una resumen práctico del ***"PROCEDIMIENTO PARA EL ANÁLISIS DE CALIDAD, LIMPIEZA Y REANÁLISIS DE LAS SECUENCIAS PRODUCIDAS POR SECUENCIACION MASIVA MEDIANTE LA TÉCNICA DE ILLUMINA"***, <ins>(CPA-PD-XXXXX)</ins>,  desarrollado e implementado por la UASIP-CENAPA-SENASICA.
+Los códigos depositados a continuación son una resumen práctico del ***"PROCEDIMIENTO PARA EL ANÁLISIS DE CALIDAD, LIMPIEZA Y REANÁLISIS DE LAS SECUENCIAS PRODUCIDAS POR SECUENCIACION MASIVA MEDIANTE LA TÉCNICA DE ILLUMINA"***, <ins>(CPA-PD-XXXXX)</ins>, desarrollado e implementado por la UASIP-CENAPA-SENASICA.
 
 ## Código
 Se recomieda colocar los archivos pareados crudos de la muestra a trabajar en un solo directorio (con el nombre de la muestra). Ej. */home/CPA-12345-24/R1.fastq.gz* y */home/CPA-12345-24/R2.fastq.gz* **(Los nombres de los archivos en las siguientes instrucciones deben ajustarse a los requerimientos de los archivos a usar)**. A partir de esta estructura de archivos, se procesan los archivos de la siguiente manera:
