@@ -102,10 +102,20 @@ while true; do
     esac
 done
 
-# Hacer directorios de salida
-mkdir "$OUTDIR"
+# Verificación y creación del directorio
+if [ -d "$OUTDIR" ]; then
+    echo "❌ Error: El directorio '$OUTDIR' ya existe. No se puede sobrescribir." >&2
+    exit 1
+else
+    mkdir "$OUTDIR"
+    echo "✅ Directorio '$OUTDIR' creado correctamente."
+fi
+
+# Creación de directorios internos
 mkdir "$KMER_OUTDIR"
 mkdir "$BLAST_OUTPUT"
+
+
 
 for KMER in $(seq "$KINI" 2 "$KFIN"); do
     START_FOR=$SECONDS
