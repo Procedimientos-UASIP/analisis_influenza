@@ -19,7 +19,7 @@ mkdir -p ENSAMBLE/SPADES/S{1..8}
 cd ENSAMBLE/SPADES/S1
 ```
 ### Ensamble
-3. Hacer el ensamblaje en dicha ubicación. Este paso implica especificar todos los kmeros a usar y, cuando se obtengan ensambles a nivel de scaffolds, realizar un blast de los resultados obtenidos para revisar el kmero que realizó el mejor ensamblade. Como esto implica mucho procesamiento en bucle, se encapsuló el proceso en un sólo script. Un ejemplo de su implementación es la siguiente. **Cuidar de modificar archivos de entrada, kmeros, output y log**:
+3. Hacer el ensamblaje en dicha ubicación. Este paso implica especificar todos los kmeros a usar y, cuando se obtengan ensambles a nivel de scaffolds, realizar un blast de los resultados obtenidos para revisar el kmero que realizó el mejor ensamblade. Como esto implica mucho procesamiento en bucle, se encapsuló el proceso en un sólo script. **Cuidar de modificar archivos de entrada, kmeros, output y log**. Un ejemplo de su implementación es la siguiente:
 
 echo "S" | nohup ~/bin/ensamble_v2.sh -a ../../../ALINEAMIENTO/BWA/S1/s1_reads_r1.fq.gz -b ../../../ALINEAMIENTO/BWA/S1/s1_reads_r2.fq.gz -x ../../../ALINEAMIENTO/BWA/S1/s1_reads_u1.fq.gz -y ../../../ALINEAMIENTO/BWA/S1/s1_reads_u2.fq.gz -t 26 --kini 39 --kfin 69 -o OUT_39_69 -c >log_39-69 2>&1 &
 
@@ -29,7 +29,12 @@ Realizar el análisis hasta los kmeros que se consideren pertinentes (max. 127).
 ```bash
 ~/analisis_influenza/bin/merge_blast_results.sh
 ```
+5. Revisar el archivo resultante para asegurar que existan resultados de blast con algunos kmeros
 
-5. Repetir desde el paso 2, modificando cada carpeta correspondiente a cada segmento.
+6. Procesar el archivo con el siguiente script para identificar la el mejor alineamiento, más extenso y con la mejor covertura. Modificar el nombre de archivo correspondiente:
+```bash
+~/analisis_influenza/bin/ensamble_analyze_blast.sh S1_blastn-careful_merged.txt
+```
 
+7. Repetir desde el paso 2, modificando cada carpeta correspondiente a cada segmento.
 
