@@ -1,12 +1,14 @@
-# Alineamiento de lecturas contra base de datos y ensamble *de novo*
+# ALINEAMIENTO DE LECTURAS CONTRA BASE DE DATOS DE INFLUENZA
+
 El ensamble genómico es un procedimiento en biología computacional que permite la reconstrucción de secuencias genómicas, a partir de fragmentos más pequeños (llamados "lecturas" o "reads") obtenidos por secuenciación masiva, por ejemplo, utilizando el equipo MySeq de Ilumina. Dichas lecturas están en formato "fastq" que contienen información de la secuencia y la calidad de detección de cada base de cada lectura. Una vez que las lecturas se revisan y se limpian, se alinean entonces contra una base de datos de referencia, se separan las lecturas por segmento viral con el cual hicieron *match*, y se ensamblen los fragmentos virales *de novo*.
 
-Los códigos depositados a continuación son una resumen práctico del "PROCEDIMIENTO PARA EL ANALISIS DE DATOS DE INFLUENZA AVIAR POR SECUENCIACIÓN MASIVA MEIDANTE LA TÉCNICA DE ILLUMINA (MAPEO, ENSAMBLE GENÓMICO Y METRICAS DEL ENSAMBLE)", <ins>(CPA-PD-XXXXX)</ins>, desarrollado e implementado por la UASIP-CENAPA-SENASICA.
+Los códigos depositados a continuación son una resumen práctico del "PROCEDIMIENTO PARA EL ANALISIS DE DATOS DE INFLUENZA AVIAR POR SECUENCIACIÓN MASIVA MEDIANTE LA TÉCNICA DE ILLUMINA
+ (ALINEAMIENTO Y FILTRADO)", <ins>(CPA-PD-XXXXX)</ins>, desarrollado e implementado por la UASIP-CENAPA-SENASICA.
 
 ## Código
 Se deberá estar posicionado en la carpeta de trabajo de la muestra, ej. */home/CPA-12345-24/* **(Los nombres de los archivos en las siguientes instrucciones deben ajustarse a los requerimientos de los archivos a usar)**. A partir de esta estructura de archivos, se procesan los archivos de la siguiente manera:
 
-### Alineamiento
+### Preparación
 1. Hacer directorio para los alineamientos:
 ```bash
 mkdir -p ALINEAMIENTO/BWA/ALL_SEGMENTS_MAPPING
@@ -19,7 +21,7 @@ ln -s TRIMMING/[CLEAN_PAIRED_READS_1] reads_r2_tr
 ln -s TRIMMING/[CLEAN_UNPAIRED_READS_1] reads_u1_tr
 ln -s TRIMMING/[CLEAN_UNPAIRED_READS_1] reads_u2_tr
 ```
-
+### Alineamiento
 3. Hacer los alineamientos de las secuencias pareadas y no pareadas contra la base de datos viral preparada en la UASIP.
 ```bash
 #Activar ambiente conda
@@ -50,6 +52,7 @@ samtools merge -u - paired.sam unpaired_r1.sam unpaired_r2.sam | samtools sort -
 cd ../../../
 ```
 
+### Filtrado
 7. Crear ocho directorios para depositar las lecturas por el segmento al cual alinearon.
 ```bash
 mkdir S{1..8}
