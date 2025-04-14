@@ -8,9 +8,9 @@ if [ "$#" -ne 1 ]; then
 fi
 
 # Guardar argumento en variable y verificar que exista el archivo
-BLAST_RESULTS="$1"
-if [ ! -f "$BLAST_RESULTS" ]; then
-    echo "❌ Error: El archivo '$BLAST_RESULTS' no existe." >&2
+INPUT_FILE="$1"
+if [ ! -f "$INPUT_FILE" ]; then
+    echo "❌ Error: El archivo '$INPUT_FILE' no existe." >&2
     exit 1
 fi
 
@@ -24,7 +24,7 @@ best_kmer="" best_node="" best_blast_reference=""
 best_length=0 best_slen=0 best_percentage=0 max_cov=0
 
 # Redirigir el archivo al principio del ciclo while
-exec 3< "$BLAST_RESULTS"
+exec 3< "$INPUT_FILE"
     
 # Leer el archivo línea por línea
 while IFS= read -r line <&3; do
