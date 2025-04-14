@@ -74,3 +74,56 @@ echo -e "KMER\tSEGMENT\tLENGTH\tSLEN\tPERCENTAGE\tCOV\tNODE\tBLAST_REFERENCE"
 echo -e "${best_kmer}\t${SEGMENT_NUMBER}\t${best_length}\t${best_slen}\t${best_percentage}\t${max_cov}\t${best_node}\t${best_blast_reference}"
 } > "$RESULT_FILE"
 echo "✅ Resultados guardados en: $RESULT_FILE"
+
+# Buscar archivo de secuencia correspondiente en KMERS
+fasta_file=$(find . -type f -path "*/KMERS/cak${best_kmer}.fasta" | head -n 1)
+
+if [ -z "$fasta_file" ]; then
+    echo "❌ No se encontró el archivo FASTA: cak${best_kmer}.fasta en ninguna carpeta KMERS/" >&2
+    exit 1
+fi
+
+# Extraer la secuencia del mejor node usando seqkit
+output_fasta="best_result_S${SEGMENT_NUMBER}_sequence.fna"
+seqkit grep -n -p "$best_node" "$fasta_file" > "$output_fasta"
+
+echo "✅ Secuencia extraída en: $output_fasta"
+
+echo "➤ Calculando cobertura de lecturas de S${SEGMENT_NUMBER} en mejor secuencia ensamblada."
+
+# conda activate alineamiento
+
+# Crear un archivo para calcular cobertura en el mejor ensamble obtenido
+mkdir COBERTURA && cd COBERTURA
+
+# Crear link simbolico al fasta con el mejor ensamble para no copiar archivos 
+ln -s "../best_result_S${SEGMENT_NUMBER}_sequence.fna" .
+
+# Crear indice
+echo -e "\t➤ Preparando indice"
+bwa-mem2 index "best_result_S${SEGMENT_NUMBER}_sequence.fna" > /dev/null 2>&1
+
+# Hacer alineamiento 
+echo -e "\t➤ Alineando lecturas pareadas de S${SEGMENT_NUMBER} en mejor secuencia ensamblada."
+bwa-mem2 mem "best_result_S${SEGMENT_NUMBER}_sequence.fna" \
+"../../../../ALINEAMIENTO/BWA/S${SEGMENT_NUMBER}/s${SEGMENT_NUMBER}_reads_r1.fq.gz" \
+"../../../../ALINEAMIENTO/BWA/S${SEGMENT_NUMBER}/s${SEGMENT_NUMBER}_reads_r1.fq.gz" \
+>"S${SEGMENT_NUMBER}_paired.sam" 2>/dev/null
+
+echo -e "\t➤ Alineando lecturas no pareadas de R1 de S${SEGMENT_NUMBER} en mejor secuencia ensamblada."
+bwa-mem2 mem "best_result_S${SEGMENT_NUMBER}_sequence.fna" \
+"../../../../ALINEAMIENTO/BWA/S${SEGMENT_NUMBER}/s${SEGMENT_NUMBER}_reads_u1.fq.gz" \
+>"S${SEGMENT_NUMBER}_unpaired_r1.sam" 2>/dev/null
+
+echo -e "\t➤ Alineando lecturas no pareadas de R2 de S${SEGMENT_NUMBER} en mejor secuencia ensamblada."
+bwa-mem2 mem "best_result_S${SEGMENT_NUMBER}_sequence.fna" \
+"../../../../ALINEAMIENTO/BWA/S${SEGMENT_NUMBER}/s${SEGMENT_NUMBER}_reads_u2.fq.gz" \
+>"S${SEGMENT_NUMBER}_unpaired_r2.sam" 2>/dev/null
+
+samtools merge -u - "S${SEGMENT_NUMBER}_paired.sam" "S${SEGMENT_NUMBER}_unpaired_r1.sam" "S${SEGMENT_NUMBER}_unpaired_r2.sam" | samtools sort -o "S${SEGMENT_NUMBER}_all_sorted.bam" && rm "S${SEGMENT_NUMBER}_paired.sam" "S${SEGMENT_NUMBER}_unpaired_r1.sam" "S${SEGMENT_NUMBER}_unpaired_r2.sam"
+
+echo -e "\t➤ Calculando profundidades"
+samtools depth -o "S${SEGMENT_NUMBER}_cobertura" -H -a "S${SEGMENT_NUMBER}_all_sorted.bam"
+
+# Regresar al directorio anterior
+cd ..
