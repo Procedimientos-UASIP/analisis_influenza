@@ -8,19 +8,19 @@ Los códigos depositados a continuación son una resumen práctico del ***"PROCE
 ## Código
 Se recomieda colocar los archivos pareados crudos de la muestra a trabajar en un solo directorio (con el nombre de la muestra). Ej. */home/CPA-12345-24/R1.fastq.gz* y */home/CPA-12345-24/R2.fastq.gz* **(Los nombres de los archivos en las siguientes instrucciones deben ajustarse a los requerimientos de los archivos a usar)**. A partir de esta estructura de archivos, se procesan los archivos de la siguiente manera:
 
-1. Ubicarse en el directorio de trabajo. Aquí deben estar los archivos de lecturas:
+1. Ubicarse en el directorio de trabajo. Aquí deben estar los archivos de lecturas. Ejemplo:
 ```bash
 cd /home/CPA-12345-24
 ```
 
-2. Crear un directorio para depositar el análisis de calidad de lecturas crudas
+2. Crear un directorio para depositar el análisis de calidad de lecturas crudas:
 ```bash
 mkdir CALIDAD_CRUDA
 ```
 
 3. Ejecutar el análisis de calidad.
 ```bash
-fastqc R1.fastq.gz R1.fastq.gz --outdir ./CALIDAD_CRUDA --threads 10 
+fastqc R1.fastq.gz R1.fastq.gz --outdir ./CALIDAD_CRUDA --threads 14 
 ```
 
 4. Revisar los archivos HTML de salida para identificar parámetros que ayuden a la limpieza. Esto se puede lograr transfiriendo los archivos HTML a una computadora local y visualizando en un navedador de internet.
