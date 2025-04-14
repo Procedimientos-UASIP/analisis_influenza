@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Verificar que se haya proporcionado un archivo
 if [ $# -ne 1 ]; then

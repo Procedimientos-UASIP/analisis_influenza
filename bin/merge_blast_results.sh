@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Obtener el nombre de la carpeta actual
 sample_name=$(basename "$PWD")
