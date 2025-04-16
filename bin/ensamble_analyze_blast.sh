@@ -105,18 +105,18 @@ bwa-mem2 index "best_result_S${SEGMENT_NUMBER}_sequence.fna" > /dev/null 2>&1
 
 # Hacer alineamiento 
 echo -e "\t➤ Alineando lecturas pareadas de S${SEGMENT_NUMBER} en mejor secuencia ensamblada."
-bwa-mem2 mem "best_result_S${SEGMENT_NUMBER}_sequence.fna" \
+bwa-mem2 mem -t 20 "best_result_S${SEGMENT_NUMBER}_sequence.fna" \
 "../../../../ALINEAMIENTO/BWA/S${SEGMENT_NUMBER}/s${SEGMENT_NUMBER}_reads_r1.fq.gz" \
 "../../../../ALINEAMIENTO/BWA/S${SEGMENT_NUMBER}/s${SEGMENT_NUMBER}_reads_r1.fq.gz" \
 >"S${SEGMENT_NUMBER}_paired.sam" 2>/dev/null
 
 echo -e "\t➤ Alineando lecturas no pareadas de R1 de S${SEGMENT_NUMBER} en mejor secuencia ensamblada."
-bwa-mem2 mem "best_result_S${SEGMENT_NUMBER}_sequence.fna" \
+bwa-mem2 mem -t 20 "best_result_S${SEGMENT_NUMBER}_sequence.fna" \
 "../../../../ALINEAMIENTO/BWA/S${SEGMENT_NUMBER}/s${SEGMENT_NUMBER}_reads_u1.fq.gz" \
 >"S${SEGMENT_NUMBER}_unpaired_r1.sam" 2>/dev/null
 
 echo -e "\t➤ Alineando lecturas no pareadas de R2 de S${SEGMENT_NUMBER} en mejor secuencia ensamblada."
-bwa-mem2 mem "best_result_S${SEGMENT_NUMBER}_sequence.fna" \
+bwa-mem2 mem -t 20 "best_result_S${SEGMENT_NUMBER}_sequence.fna" \
 "../../../../ALINEAMIENTO/BWA/S${SEGMENT_NUMBER}/s${SEGMENT_NUMBER}_reads_u2.fq.gz" \
 >"S${SEGMENT_NUMBER}_unpaired_r2.sam" 2>/dev/null
 
