@@ -103,11 +103,11 @@ done
 
 # Verificación y creación del directorio
 if [ -d "$OUTDIR" ]; then
-    echo "❌ Error: El directorio '$OUTDIR' ya existe. No se puede sobrescribir." >&2
-    exit 1
-else
-    mkdir "$OUTDIR"
-    echo "✅ Directorio '$OUTDIR' creado correctamente."
+        echo "❌ Error: El directorio '$OUTDIR' ya existe. No se puede sobrescribir." >&2
+        exit 1
+    else
+        mkdir "$OUTDIR"
+        echo "✅ Directorio '$OUTDIR' creado correctamente."
 fi
 
 # Creación de directorios internos
