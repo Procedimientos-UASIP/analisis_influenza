@@ -50,10 +50,14 @@ scp seg_1_nucl.fna.gz admcenapa@10.24.34.18:/backup/RAW/UASIP_DB_ALPHAINFLUENZAV
 ls -la
 ```
 
-### Limpieza de la información en encabezadps de secuencias de cada segmento
+### Limpieza de la información en encabezados de secuencias de cada segmento
 
 15.	Corregir los encabezados de cada fasta. Para eso, se diseñó un script con los comandos necesarias. Sólo funcionará si se han seguido las instrucciones de este procedimiento al pie de la letra hasta este punto. Se incluye en un loop *for* para operar sobre todos los archivos transferidos:
 ```bash
+#Revisar primero con esta instruccion. Sólo deben haber una cantidad por archivo fasta de segmento procesado.
+#for i in {1..8}; do ~/analisis_influenza/bin/format_headers_db_virus.sh seg_"$i"_nucl.fasta.gz | grep ">" | cut -f1 -d"|" | sort | uniq -c; done
+
+# Si lo genera discrepancia, reportar para revisar el script de limpieza. Posteriormente:
 for i in {1..8}; do ~/analisis_influenza/bin/format_headers_db_virus.sh seg_"$i"_nucl.fasta.gz | pigz -9 -p20 -c >clean_seg_"$i"_nucl.fna.gz; done
 ```
 
