@@ -19,7 +19,10 @@ fi
 # Procesar con awk
 $READER "$INPUT" | awk '
 /^>/ {
-    line = substr($0, 2)
+    # Seleccionar desde el > hacia adelante
+    line = substr($0, 2) 
+
+    # Separa el header por | y almacena an un arreglo llamado parts
     n = split(line, parts, "\\|")
 
     # Limpiar espacios en cada parte
@@ -27,10 +30,21 @@ $READER "$INPUT" | awk '
         gsub(/^ +| +$/, "", parts[i])
     }
 
-    match(parts[2], /segment[ ]*[0-9]+/, seg)
-    gsub("segment[ ]*", "", seg[0])
+    # Aislar la descipcion del fasta. 
+    desc = parts[2]
 
-    printf(">segmento_%s|%s|%s|%s|%s|%s|%s\n", seg[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6])
+    # Eliminar todo el contenido entre paréntesis, incluyendo "A/..." con subtipo (H3N2), etc. para evitar buscar ahí dentro.
+    gsub(/\(.*\)/, "", desc)
+
+    # Buscar entonces "segment" fuera del identificador del virus. Si no lo encuentra, lo extrae de otro apartado del encabezado.
+    if (match(desc, /segment[^0-9]*([0-9]+)/, seg)) {
+        segment_num = seg[1]
+    } else {
+        segment_num = parts[5]
+    }
+
+    # Producir el header final
+    printf(">segmento_%s|%s|%s|%s|%s|%s|%s\n", segment_num, parts[1], parts[2], parts[3], parts[4], parts[5], parts[6])
     next
 }
 { print }
