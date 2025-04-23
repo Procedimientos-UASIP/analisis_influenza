@@ -38,3 +38,8 @@ Realizar el análisis hasta los kmeros que se consideren pertinentes (max. 127).
 
 7. Repetir desde el paso 2, modificando cada carpeta correspondiente a cada segmento.
 
+8. Se generará la carpeta de COBERTURA con archivos necesarios para obtener la cobertura de cada segmento. Para unir todos las coberturas de todos los segmentos, posicionarse en la carpeta con todas las subcarpetas de segmentos (ENSAMBLE/SPADES/) y ejecutar:
+```bash
+~/analisis_influenza/bin/unir_coberturas.sh
+```
+   
