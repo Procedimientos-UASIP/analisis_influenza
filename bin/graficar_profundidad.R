@@ -48,7 +48,7 @@ opt <- parse_args(opt_parser)
 
 # Verificar que ambos argumentos fueron suministrados
 if (is.null(opt$input_file) || is.null(opt$muestra)) {
-  stop("Faltan argumentos. Debes proporcionar el archivo de datos y el nombre de la muestra. Ejemplo: ./mi_script.R --in coberturas_finales.tsv --muestra muestra_1", call. = FALSE)
+  stop("Faltan argumentos. Debes proporcionar el archivo de datos y el nombre de la muestra. Ejemplo: ./mi_script.R --in coberturas_finales.tsv --muestra CPA-XXXX-2025", call. = FALSE)
 }
 
 # Asignar a variables
