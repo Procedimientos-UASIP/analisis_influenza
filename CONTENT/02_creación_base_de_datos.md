@@ -1,4 +1,4 @@
-# CREACIÓN DE BASE DE DATOS DE SECUENCIAS DE INFLUENZA
+# CREAR BASE DE DATOS DE VIRUS (NCBI Virus)
 
 Una base de datos es una colección organizada de datos, los cuales se almacenan y gestionan de manera estructurada, permitiendo el acceso y/o modificación de los datos contenidos. El principal propósito de una base de datos es facilitar el almacenamiento de grandes volúmenes de datos y permitir que los usuarios puedan trabajar con ellos de manera eficiente.
 
