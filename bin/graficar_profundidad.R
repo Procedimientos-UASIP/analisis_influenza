@@ -1,11 +1,11 @@
 #!/usr/bin/env Rscript
 
 # ---------------------- #
-# 1. Verificación de paquetes
+# 1. VERIFICACIÓN DE LIBRERIAS
 # ---------------------- #
 
 # Lista de paquetes requeridos
-required_packages <- c("tidyverse", "scales", "ggrepel", "pals", "optparse")
+required_packages <- c("tidyverse", "scales", "pals", "optparse")
 
 # Función para verificar los paquetes
 check_required_packages <- function(packages) {
@@ -16,12 +16,8 @@ check_required_packages <- function(packages) {
   # Si hay paquetes no instalados, detiene la ejecución
   if (length(not_installed) > 0) {
     stop(
-      paste(
-        "Los siguientes paquetes no están instalados:",
-        paste(not_installed, collapse = ", ")
-      ),
-      call. = FALSE
-    )
+      paste( "Los siguientes paquetes no están instalados:", paste(not_installed, collapse = ", ")), call. = FALSE
+      )
   }
 }
 
@@ -29,12 +25,12 @@ check_required_packages <- function(packages) {
 check_required_packages(required_packages)
 
 # Cargar paquetes requeridos. No se cargan todos para evitar enmascaramientos
-for (pkg in c("tidyverse", "ggrepel", "optparse")) {
+for (pkg in c("tidyverse", "optparse")) {
   suppressMessages(library(pkg, character.only = TRUE))
 }
 
 # ---------------------- #
-# 2. Definición de opciones con optparse
+# 2. DEFINIR OPCIONES CON OPTPARSE
 # ---------------------- #
 
 option_list <- list(
@@ -56,7 +52,7 @@ input_file <- opt$input_file
 sample_name <- opt$muestra
 
 # ---------------------- #
-# 3. Revisar el archivo
+# 3. REVISAR ARCHIVO
 # ---------------------- #
 
 if (!file.exists(input_file)) {
@@ -67,8 +63,29 @@ if (!file.exists(input_file)) {
 # 4. SCRIPT
 # ---------------------- #
 
-# Puedes usar read_tsv de readr (parte de tidyverse)
-df_prof <- suppressMessages(read_tsv(input_file, show_col_types = FALSE) %>%
+# Leer el archivo con coverturas
+df_prof <- suppressMessages(read_tsv(input_file, show_col_types = FALSE))
+
+# Confirmación de lectura y datos
+message("✅ Archivo leído correctamente: ", input_file)
+message("- Número de filas: ", nrow(df_prof))
+message("- Número de columnas: ", ncol(df_prof))
+message("- Muestra procesada: ", sample_name)
+message("💻 Limpiando y procesando")
+
+# Definir las columnas esperadas
+cols_esperadas <- paste0("S", 1:8)
+
+# Añadir columnas faltantes con NA
+for (col in cols_esperadas) {
+  if (!col %in% names(df_prof)) {
+    df_prof[[col]] <- NA
+  }
+}
+
+# Reordenar columnas y renombrar
+df_prof <- df_prof %>% 
+  select(order(colnames(df_prof))) %>% 
   rename("Posición" = "POS",
          "S1(PB2)" = "S1",
          "S2(PB1)" = "S2",
@@ -77,13 +94,7 @@ df_prof <- suppressMessages(read_tsv(input_file, show_col_types = FALSE) %>%
          "S5(NP)" = "S5",
          "S6(NA)" = "S6",
          "S7(M1, M2)" = "S7",
-         "S8(Ns1, Ns2)" = "S8"))
-
-# Confirmación de lectura y datos
-message("Archivo leído correctamente: ", input_file)
-message("Número de filas: ", nrow(df_prof))
-message("Número de columnas: ", ncol(df_prof))
-message("Muestra procesada: ", sample_name)
+         "S8(Ns1, Ns2)" = "S8")
 
 # Transformar, ordenar y filtrar
 df_prof_long <- df_prof %>% 
@@ -96,11 +107,11 @@ plot_prof <- df_prof_long %>%
   ggplot(aes(x = Posición, y = Profundidad, color = Segmento))+
   facet_wrap(~ Segmento, ncol = 1, strip.position = "right", scales = "free_y") +
   geom_line(linewidth = 1.5) +
-  scale_color_manual(values = pals::brewer.set1(length(unique(df_prof_long$Segmento)))) +
-  labs(title = "Profundidad de secuenciación de los segmentos\nde Influenza tipo A",
-       subtitle = paste0( "Muestra: ",sample_name)) +
   scale_x_continuous(breaks = seq (0,max(df_prof_long$Posición), 100), labels = scales::comma) +
   scale_y_continuous(labels = scales::comma) +
+  scale_color_manual(values = pals::brewer.set1(length(colnames(df_prof)) -1)) +
+  labs(title = "Profundidad de secuenciación de los segmentos\nde Influenza tipo A",
+    subtitle = paste0( "Muestra: ",sample_name)) +
   theme_bw() +
   theme(plot.title = element_text(size = 18, face = "bold"), 
         plot.subtitle = element_text(size = 16),
@@ -114,4 +125,4 @@ plot_prof <- df_prof_long %>%
 # Guardar plot
 ggsave(filename = paste0(sample_name, "_profundidades.png"), plot = plot_prof, device = "png", units = "cm", width = 20, height = 26)
 
-message("Gráfica producidad. Finalizando")
+message("📄 Gráfica producida. Finalizando")
