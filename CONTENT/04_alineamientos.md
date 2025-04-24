@@ -55,17 +55,12 @@ cd ../../../
 ### Filtrado
 7. Crear ocho directorios para depositar las lecturas por el segmento al cual alinearon.
 ```bash
-mkdir S{1..8}
+mkdir ALINEAMIENTO/BWA/S{1..8}
 ```
 
 8. Ejecutar el siguiente programa:
 ```bash
-~/bin/separar_seqs_segmentos.sh
+~/analisis_influenza/bin/separar_seqs_segmentos.sh
 ```
 
 Este programa abre el archivo bam, elimina alineamientos con alineamientos secundarios, y obtiene las lecturas por cada segmento. Se analiza, por segmento, el formato CIGAR asociado de cada lectura. Se filtran aquellas secuencias que alinearon en al menos 70% de sus bases. Se guardan los nombres de las lecturas pertinentes y se extraen las secuencias de los archivos fastq limpios usando dichos nombres. Los archivos producidos se guardan en las ubicaciones pertinentes.
-
-1. Regresar al directorio donde están las ligas simbólicas (Revisar ubicación con pwd)
-```bash
-cd .. 
-```
