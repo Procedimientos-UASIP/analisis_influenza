@@ -25,21 +25,21 @@ do
     echo "Extrayendo lecturas R1 del segmento $i"
 
     # Extraer las secuencias R1
-    seqkit grep -f "./ALINEAMIENTO/BWA/S${i}/s${i}_lecturas.txt" reads_r1_tr.fq.gz | gzip >"./ALINEAMIENTO/BWA/S${i}/s${i}_reads_r1.fq.gz"
+    seqkit grep -f "./ALINEAMIENTO/BWA/S${i}/s${i}_lecturas.txt" reads_r1_tr | gzip >"./ALINEAMIENTO/BWA/S${i}/s${i}_reads_r1.fq.gz"
 
     echo "Extrayendo lecturas R2 del segmento $i"
 
     # Extraer las secuencias R2
-    seqkit grep -f "./ALINEAMIENTO/BWA/S${i}/s${i}_lecturas.txt" reads_r2_tr.fq.gz | gzip >"./ALINEAMIENTO/BWA/S${i}/s${i}_reads_r2.fq.gz"
+    seqkit grep -f "./ALINEAMIENTO/BWA/S${i}/s${i}_lecturas.txt" reads_r2_tr | gzip >"./ALINEAMIENTO/BWA/S${i}/s${i}_reads_r2.fq.gz"
 
     echo "Extrayendo lecturas no pareadas de R1 del segmento $i"
 
     # Extraer secuencias no pareadas de secuencias R1
-    seqkit grep -f "./ALINEAMIENTO/BWA/S${i}/s${i}_lecturas.txt" reads_u1_tr.fq.gz | gzip >"./ALINEAMIENTO/BWA/S${i}/s${i}_reads_u1.fq.gz"
+    seqkit grep -f "./ALINEAMIENTO/BWA/S${i}/s${i}_lecturas.txt" reads_u1_tr | gzip >"./ALINEAMIENTO/BWA/S${i}/s${i}_reads_u1.fq.gz"
 
     echo "Extrayendo lecturas no pareadas de R2 del segmento $i"
 
     # Extraer secuencias no pareadas de secuencias R2
-    seqkit grep -f "./ALINEAMIENTO/BWA/S${i}/s${i}_lecturas.txt" reads_u2_tr.fq.gz | gzip >"./ALINEAMIENTO/BWA/S${i}/s${i}_reads_u2.fq.gz"
+    seqkit grep -f "./ALINEAMIENTO/BWA/S${i}/s${i}_lecturas.txt" reads_u2_tr | gzip >"./ALINEAMIENTO/BWA/S${i}/s${i}_reads_u2.fq.gz"
 
 done
