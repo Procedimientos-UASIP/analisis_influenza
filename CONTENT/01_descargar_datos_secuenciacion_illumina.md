@@ -10,7 +10,7 @@ Los datos obtenidos del equipo de secuenciación masiva son inmediatamente depos
 
 2. Authorizar el programa para que acceda a la nube
 ```bash
-bs auth
+~/analisis_influenza/bin/bs auth
 ```
 Esto proporcionará una URL donde se deberán suministrar las credenciales apropiadas. Preguntar por ellas. Una vez configurada la autorización, el programa puede utilizarse.
 
@@ -30,6 +30,14 @@ Esto proporcionará una URL donde se deberán suministrar las credenciales aprop
 ```
 6. Armar la descarga, por ejemplo:
 ```bash
-~/analisis_influenza/bin/bs biosample download --id=745389546 --output=TEST --extension=fastq.gz
+~/analisis_influenza/bin/bs biosample download --id=745389546 --output=PROYECTO --extension=fastq.gz
 ```
-
+7. Tambien se puede descargar dataset individuales si se conoce su código:
+```bash
+~/analisis_influenza/bin/bs dataset list
+```
+8. Armar la descarga, cuidando el id y el nombre del output por ejemplo:
+```bash
+~/analisis_influenza/bin/bs dataset download --id=ds.7a0aeed5a5cc483ea5e82c59b27dd20c --output=CPA-00245-25-P1-1 --extension=fastq.gz
+```
+9. Remover cualquier archivo *.json que se haya descargado, ya que no resulta importante.
