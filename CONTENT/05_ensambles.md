@@ -18,28 +18,31 @@ mkdir -p ENSAMBLE/SPADES/S{1..8}
 ```bash
 cd ENSAMBLE/SPADES/S1
 ```
+
 ### Ensamble
 3. Hacer el ensamblaje en dicha ubicación. Este paso implica especificar todos los kmeros a usar y, cuando se obtengan ensambles a nivel de scaffolds, realizar un blast de los resultados obtenidos para revisar el kmero que realizó el mejor ensamblade. Como esto implica mucho procesamiento en bucle, se encapsuló el proceso en un sólo script. **Cuidar de modificar archivos de entrada, kmeros, output y log**. Un ejemplo de su implementación es la siguiente:
 
-echo "S" | nohup ~/bin/ensamble_v2.sh -a ../../../ALINEAMIENTO/BWA/S1/s1_reads_r1.fq.gz -b ../../../ALINEAMIENTO/BWA/S1/s1_reads_r2.fq.gz -x ../../../ALINEAMIENTO/BWA/S1/s1_reads_u1.fq.gz -y ../../../ALINEAMIENTO/BWA/S1/s1_reads_u2.fq.gz -t 26 --kini 39 --kfin 69 -o OUT_39_69 -c >log_39-69 2>&1 &
+```bash
+echo "S" | nohup ~/analisis_influenza/bin/ensamble.sh -a ../../../ALINEAMIENTO/BWA/S1/s1_reads_r1.fq.gz -b ../../../ALINEAMIENTO/BWA/S1/s1_reads_r2.fq.gz -x ../../../ALINEAMIENTO/BWA/S1/s1_reads_u1.fq.gz -y ../../../ALINEAMIENTO/BWA/S1/s1_reads_u2.fq.gz -t 26 --kini 11 --kfin 127 -o OUT_11_127 >log_11_127 2>&1 &
+```
 
-Realizar el análisis hasta los kmeros que se consideren pertinentes (max. 127).
+Realizar el análisis hasta los kmeros que se consideren pertinentes (min. 11, max. 127).
 
-4. Ejecutar el script para unir todos los BLAST resultantes depositatos en las carpetas llamadas OUT_*
+4. Ejecutar el script para unir todos los BLAST resultantes depositatos en las carpetas llamadas OUT_*. Ejecutar aunque sólo haya un directorio de salida.
 ```bash
 ~/analisis_influenza/bin/merge_blast_results.sh
 ```
-5. Revisar el archivo resultante para asegurar que existan resultados de blast con algunos kmeros
 
-6. Procesar el archivo con el siguiente script para identificar la el mejor alineamiento, más extenso y con la mejor covertura. Se generará además la carpeta de PROFUNDIDAD con la profundidad obtenida para cada segmento. Modificar el nombre de archivo correspondiente:
+5. Revisar el archivo resultante para asegurar que existan resultados de blast con algunos kmeros.
+
+6. Procesar el archivo con el siguiente script para identificar la el mejor alineamiento, más extenso y con la mejor covertura. Se generará además la carpeta de PROFUNDIDAD con la profundidad obtenida para el segmento. Modificar el nombre de archivo correspondiente:
 ```bash
 ~/analisis_influenza/bin/ensamble_analyze_blast.sh S1_blastn-careful_merged.txt
 ```
 
-1. Repetir desde el paso 2, modificando cada carpeta correspondiente a cada segmento.
+7. Repetir desde el paso 2, modificando cada carpeta correspondiente a cada segmento.
 
-2.  Para unir todos las profundidades de todos los segmentos, posicionarse en la carpeta con todas las subcarpetas de segmentos (ENSAMBLE/SPADES/) y ejecutar:
+8. Para unir todos las profundidades de todos los segmentos, posicionarse en la carpeta con todas las subcarpetas de segmentos (ENSAMBLE/SPADES/) y ejecutar:
 ```bash
 ~/analisis_influenza/bin/unir_profundidades.sh
 ```
-   
