@@ -35,14 +35,21 @@ Realizar el análisis hasta los kmeros que se consideren pertinentes (min. 11, m
 
 5. Revisar el archivo resultante para asegurar que existan resultados de blast con algunos kmeros.
 
-6. Procesar el archivo con el siguiente script para identificar la el mejor alineamiento, más extenso y con la mejor covertura. Se generará además la carpeta de PROFUNDIDAD con la profundidad obtenida para el segmento. Modificar el nombre de archivo correspondiente:
+6. Procesar el archivo con el siguiente script para identificar la el mejor alineamiento, más extenso y con la mejor covertura. Se generará además la carpeta de PROFUNDIDAD con la profundidad obtenida para el segmento. Ejecutar en ambiente alineamiento. Modificar el nombre de archivo correspondiente:
 ```bash
+conda activate alineamiento
 ~/analisis_influenza/bin/ensamble_analyze_blast.sh S1_blastn-careful_merged.txt
 ```
 
 7. Repetir desde el paso 2, modificando cada carpeta correspondiente a cada segmento.
 
-8. Para unir todos las profundidades de todos los segmentos, posicionarse en la carpeta con todas las subcarpetas de segmentos (ENSAMBLE/SPADES/) y ejecutar:
+8. Para unir todos las profundidades de todos los segmentos, posicionarse en la carpeta con todas las subcarpetas de segmentos (ENSAMBLE/SPADES/) y ejecutar el script indicando la ubicación de cada archivo a unir:
 ```bash
-~/analisis_influenza/bin/unir_profundidades.sh
+~/analisis_influenza/bin/unir_profundidades.sh --S1 S1/COBERTURA/S1_cobertura --S2 S2/COBERTURA/S2_cobertura --S3 S3/COBERTURA/S3_cobertura --S4 S4/COBERTURA/S4_cobertura --S5 S5/COBERTURA/S5_cobertura --S6 S6/COBERTURA/S6_cobertura --S7 S7/COBERTURA/S7_cobertura --S8 S8/COBERTURA/S8_cobertura
+```
+
+9. Graficar profundidades. Indicar archivo donde se unieron las profundidades y el nombre de la muestra:
+```bash
+conda activate R
+~/analisis_influenza/bin/graficar_profundidad.R --input_file coberturas_finales.tsv --muestra CPA-00245-25-P1-1
 ```
