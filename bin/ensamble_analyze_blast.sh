@@ -20,7 +20,7 @@ RESULT_FILE="best_result_${BASENAME}"
 SEGMENT_NUMBER=$(basename "$PWD" | sed 's/^S//')
 
 # Inicializar variables del mejor hit
-best_kmer="" best_node="" best_blast_reference=""
+best_kmer="" best_node="" best_blast_reference="" best_strand=""
 best_length=0 best_slen=0 best_percentage=0 max_cov=0
 
 # Redirigir el archivo al principio del ciclo while
@@ -41,6 +41,16 @@ if [[ $line == K-mer* ]]; then
         blast_reference=$(awk -F'|' '{print $2}' <<< "$line")
         similarity_percentage=$(awk "BEGIN { printf \"%.4f\", ($length / $slen) * 100 }")
 
+        start=$(awk '{print $9}' <<< "$line")
+        end=$(awk '{print $10}' <<< "$line")
+
+        # Determinar la orientación
+        if [ "${start}" -lt "${end}" ]; then
+            strand="+"
+        else
+            strand="-"
+        fi
+
         # Seleccionar mejor hit basado en porcentaje y cobertura
         if awk "BEGIN {exit !($similarity_percentage > $best_percentage || \
             ($similarity_percentage == $best_percentage && $cov > $max_cov))}"; then
@@ -52,6 +62,7 @@ if [[ $line == K-mer* ]]; then
             best_slen="$slen"
             best_percentage="$similarity_percentage"
             max_cov="$cov"
+            best_strand="$strand"
         fi
     fi
 done 
@@ -59,19 +70,10 @@ done
 # Cerrar el descriptor de archivo cuando ya no se necesite
 exec 3<&-
 
-# Mostrar resultados
-echo "NODE del hit: $best_node"
-echo "Referencia del BLAST: $best_blast_reference"
-echo "Cobertura (cov): $max_cov"
-echo "K-mer: $best_kmer"
-echo "Segmento: $SEGMENT_NUMBER"
-echo "Length = $best_length, Slen = $best_slen"
-echo "Porcentaje de similitud: $best_percentage%"
-    
 #Guardar resultados en archivo con encabezado y tabulaciones
 {
-echo -e "KMER\tSEGMENT\tLENGTH\tSLEN\tPERCENTAGE\tCOV\tNODE\tBLAST_REFERENCE"
-echo -e "${best_kmer}\t${SEGMENT_NUMBER}\t${best_length}\t${best_slen}\t${best_percentage}\t${max_cov}\t${best_node}\t${best_blast_reference}"
+echo -e "KMER\tSEGMENT\tLENGTH\tSLEN\tPERCENTAGE\tCOV\tNODE\tBLAST_REFERENCE\tSUBJECT_STRAND"
+echo -e "${best_kmer}\t${SEGMENT_NUMBER}\t${best_length}\t${best_slen}\t${best_percentage}\t${max_cov}\t${best_node}\t${best_blast_reference}\t${best_strand}"
 } > "$RESULT_FILE"
 echo "✅ Resultados guardados en: $RESULT_FILE"
 
@@ -88,6 +90,19 @@ output_fasta="best_result_S${SEGMENT_NUMBER}_sequence.fna"
 seqkit grep -n -p "$best_node" "$fasta_file" > "$output_fasta"
 
 echo "✅ Secuencia extraída en: $output_fasta"
+
+# Corregir la orientación según la variable best_strand
+corrected_output="best_result_S${SEGMENT_NUMBER}_sequence_corrected.fna"
+
+if [ "$best_strand" == "-" ]; then
+    echo "🔄 Invirtiendo la secuencia (reverso complementario) por orientación '-'..."
+    seqkit seq --reverse --complement -t dna -v "$output_fasta" > "$corrected_output"
+else
+    echo "✅ Manteniendo la secuencia original (orientación '+')..."
+    cp "$output_fasta" "$corrected_output"
+fi
+
+echo "✅ Secuencia corregida guardada en: $corrected_output"
 
 echo "➤ Calculando cobertura de lecturas de S${SEGMENT_NUMBER} en mejor secuencia ensamblada."
 
