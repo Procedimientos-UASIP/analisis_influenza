@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Verificar entrada
+# Validar entrada
 if [ "$#" -ne 1 ]; then
     echo "❌ Uso: $0 <archivo_fasta>" >&2
     exit 1
@@ -14,18 +14,40 @@ if [ ! -f "$FASTA" ]; then
     exit 1
 fi
 
-# Procesar cada secuencia individualmente
+# Función para encontrar el motivo más corto
+buscar_motivo_mas_corto() {
+    local protein="$1"
+    local best=""
+    local len=${#protein}
+
+    for ((i=0; i<=len-4; i++)); do
+        if [[ "${protein:$i:1}" == "P" ]]; then
+            for ((j=i+1; j<=len-3; j++)); do
+                if [[ "${protein:$j:3}" == "GLF" ]]; then
+                    local candidate="${protein:$i:$((j+3-i))}"
+                    if [[ -z "$best" || ${#candidate} -lt ${#best} ]]; then
+                        best="$candidate"
+                    fi
+                    break
+                fi
+            done
+        fi
+    done
+
+    echo "$best"
+}
+
+# Procesar cada secuencia
 while read -r header && read -r seq; do
     ID="${header#>}"
     echo "🔍 Análisis de: $ID"
 
-    # Crear archivo temporal para la secuencia actual
+    # Secuencia en archivo temporal
     tmp_fasta=$(mktemp)
     echo -e ">$ID\n$seq" > "$tmp_fasta"
 
-    # Procesar frames directos
+    # Procesar strand +
     for FRAME in 0 1 2; do
-        # Recortar frame
         SEQ_FRAME="${seq:$FRAME}"
         LEN=${#SEQ_FRAME}
         MOD=$((3 - LEN % 3))
@@ -33,26 +55,23 @@ while read -r header && read -r seq; do
             SEQ_FRAME="${SEQ_FRAME}$(printf 'N%.0s' $(seq 1 $MOD))"
         fi
 
-        # Guardar secuencia recortada temporalmente
         tmp_fasta_frame=$(mktemp)
         echo -e ">$ID\n$SEQ_FRAME" > "$tmp_fasta_frame"
 
-        # Traducir
         TRANS=$(seqkit translate -F "$tmp_fasta_frame" | tail -n +2)
 
-        # Buscar motivo
-        MATCH=$(echo "$TRANS" | grep -oP 'P.*?GLF' || true)
+        MATCH=$(buscar_motivo_mas_corto "$TRANS")
+
         if [ -n "$MATCH" ]; then
-            SHORTEST=$(echo "$MATCH" | awk '{ print length, $0 }' | sort -n | head -n1 | cut -d' ' -f2-)
-            POS_COUNT=$(echo "$SHORTEST" | grep -o '[RHK]' | wc -l || true)
-            if [ -z "$POS_COUNT" ]; then POS_COUNT=0; fi
+            POS_COUNT=$(echo "$MATCH" | grep -o '[RHK]' | wc -l || true)
+            POS_COUNT=${POS_COUNT:-0}
 
             if (( POS_COUNT <= 4 )); then
                 PRED="LPAI"
             else
                 PRED="HPAI"
             fi
-            echo -e "Frame +$((FRAME+1))\t$SHORTEST\t$PRED"
+            echo -e "Frame +$((FRAME+1))\t$MATCH\t$PRED"
         else
             echo -e "Frame +$((FRAME+1))\t\t"
         fi
@@ -60,7 +79,7 @@ while read -r header && read -r seq; do
         rm -f "$tmp_fasta_frame"
     done
 
-    # Reverso complementario
+    # Procesar strand -
     REVSEQ=$(seqkit seq --reverse --complement -t dna -v "$tmp_fasta" | tail -n +2)
 
     for FRAME in 0 1 2; do
@@ -71,26 +90,23 @@ while read -r header && read -r seq; do
             SEQ_FRAME="${SEQ_FRAME}$(printf 'N%.0s' $(seq 1 $MOD))"
         fi
 
-        # Guardar secuencia recortada temporalmente
         tmp_fasta_frame=$(mktemp)
         echo -e ">$ID\n$SEQ_FRAME" > "$tmp_fasta_frame"
 
-        # Traducir
         TRANS=$(seqkit translate -F "$tmp_fasta_frame" | tail -n +2)
 
-        # Buscar motivo
-        MATCH=$(echo "$TRANS" | grep -oP 'P.*?GLF' || true)
+        MATCH=$(buscar_motivo_mas_corto "$TRANS")
+
         if [ -n "$MATCH" ]; then
-            SHORTEST=$(echo "$MATCH" | awk '{ print length, $0 }' | sort -n | head -n1 | cut -d' ' -f2-)
-            POS_COUNT=$(echo "$SHORTEST" | grep -o '[RHK]' | wc -l || true)
-            if [ -z "$POS_COUNT" ]; then POS_COUNT=0; fi
+            POS_COUNT=$(echo "$MATCH" | grep -o '[RHK]' | wc -l || true)
+            POS_COUNT=${POS_COUNT:-0}
 
             if (( POS_COUNT <= 4 )); then
                 PRED="LPAI"
             else
                 PRED="HPAI"
             fi
-            echo -e "Frame -$((FRAME+1))\t$SHORTEST\t$PRED"
+            echo -e "Frame -$((FRAME+1))\t$MATCH\t$PRED"
         else
             echo -e "Frame -$((FRAME+1))\t\t"
         fi
