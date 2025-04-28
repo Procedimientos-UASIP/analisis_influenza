@@ -175,7 +175,7 @@ for KMER in $(seq "$KINI" 2 "$KFIN"); do
     RUN_TIME_FOR=$((END_FOR - START_FOR))
 
     # Imprimir tiempo que tardo el loop actual
-    printf "⏱️ [$(date '+%Y-%m-%d %H:%M:%S')] Proceso para k=%s finalizado en %s min, %s seg.\n\n" \
+    printf "⏱️  [$(date '+%Y-%m-%d %H:%M:%S')] Proceso para k=%s finalizado en %s min, %s seg.\n\n" \
         "$KMER" "$((RUN_TIME_FOR/60))" "$((RUN_TIME_FOR%60))"
 done
 
