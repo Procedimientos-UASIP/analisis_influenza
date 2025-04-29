@@ -22,6 +22,7 @@ mv [LecturasR1] [LecturasR2] ./RAW/
 ln -s ./RAW/[LecturasR1] R1.fq.gz
 ln -s ./RAW/[LecturasR2] R2.fq.gz
 ```
+
 4. Crear un directorio para depositar el análisis de calidad de lecturas crudas:
 ```bash
 mkdir CALIDAD_CRUDA
@@ -33,12 +34,12 @@ conda activate calidad
 fastqc R1.fq.gz R2.fq.gz --outdir ./CALIDAD_CRUDA --threads 14 
 ```
 
-1. Revisar los archivos HTML de salida para identificar parámetros que ayuden a la limpieza. Esto se puede lograr transfiriendo los archivos HTML a una computadora local y visualizando en un navedador de internet.
+6. Revisar los archivos HTML de salida para identificar parámetros que ayuden a la limpieza. Esto se puede lograr transfiriendo los archivos HTML a una computadora local y visualizando en un navedador de internet.
 
-2. Ejecutar el programa de limpieza. Ajustar parámetros de acuerdo a las necesidades. Cuidado al modificar los cores (ver documentación). Los resultados se guardarán en ./TRIMMING/
+7. Ejecutar el programa de limpieza. Ajustar parámetros de acuerdo a las necesidades. Cuidado al modificar los cores (ver documentación). Los resultados se guardarán en ./TRIMMING/
 ```bash
 trim_galore --paired --retain_unpaired --gzip --fastqc --cores 6 --clip_R1 18 --clip_R2 18 --three_prime_clip_R1 2 --three_prime_clip_R2 2 --length 180 -o TRIMMING/ R1.fq.gz R2.fq.gz
 conda deactivate calidad
 ```
 
-1. Revisar los archivos HTML de salida para verificar los resultados de la limpieza. Queda a consideración de la experiencia del usuario el quedar conforme con la limpieza realizada. 
+8. Revisar los archivos HTML de salida para verificar los resultados de la limpieza. Queda a consideración de la experiencia del usuario el quedar conforme con la limpieza realizada. 

@@ -53,22 +53,22 @@ conda activate alineamiento
 ~/analisis_influenza/bin/unir_profundidades.sh --S1 S1/COBERTURA/S1_cobertura --S2 S2/COBERTURA/S2_cobertura --S3 S3/COBERTURA/S3_cobertura --S4 S4/COBERTURA/S4_cobertura --S5 S5/COBERTURA/S5_cobertura --S6 S6/COBERTURA/S6_cobertura --S7 S7/COBERTURA/S7_cobertura --S8 S8/COBERTURA/S8_cobertura
 ```
 
-11. Ejecutar este script para calcular el porcentaje de lecturas ensambladas de acuerdo a las que se filtraron por el alineamiento
+10. Ejecutar este script para calcular el porcentaje de lecturas ensambladas de acuerdo a las que se filtraron por el alineamiento
 ```bash
 ~/analisis_influenza/bin/ensamble_cal_porc_lect_mapeadas.sh
 ```
 
-12. Activar ambiente conda para graficar en R
+11. Activar ambiente conda para graficar en R
 ```bash
 conda activate R
 ```
 
-13. Graficar profundidades. Indicar archivo donde se unieron las profundidades, así como el nombre de la muestra:
+12. Graficar profundidades. Indicar archivo donde se unieron las profundidades, así como el nombre de la muestra:
 ```bash
 ~/analisis_influenza/bin/graficar_profundidad.R --input_file coberturas_finales.tsv --muestra CPA-00245-25-P1-1
 ```
 
-1.  Graficar profundidades. Indicar archivo donde se unieron los datos de las lecturas usadas, así como el nombre de la muestra:
+13.  Graficar profundidades. Indicar archivo donde se unieron los datos de las lecturas usadas, así como el nombre de la muestra:
 ```bash
 ~/analisis_influenza/bin/graficar_lecturas.R --input_file uso_de_lecturas.tsv --muestra CPA-00245-25-P1-1
 ```
