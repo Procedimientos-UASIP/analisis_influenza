@@ -55,7 +55,7 @@ conda activate alineamiento
 
 11. Ejecutar este script para calcular el porcentaje de lecturas ensambladas de acuerdo a las que se filtraron por el alineamiento
 ```bash
-~/analisis_influenza/bin/
+~/analisis_influenza/bin/ensamble_cal_porc_lect_mapeadas.sh
 ```
 
 12. Activar ambiente conda para graficar en R
