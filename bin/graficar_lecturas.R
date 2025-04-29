@@ -4,9 +4,6 @@
 # 1. VERIFICACIÓN DE LIBRERIAS
 # ---------------------- #
 
-# Lista de paquetes requeridos
-required_packages <- c("tidyverse", "scales", "pals", "optparse")
-
 # Función para verificar los paquetes
 check_required_packages <- function(packages) {
 
@@ -20,6 +17,9 @@ check_required_packages <- function(packages) {
       )
   }
 }
+
+# Lista de paquetes requeridos
+required_packages <- c("tidyverse", "scales", "pals", "optparse")
 
 # Ejecutar la verificación
 check_required_packages(required_packages)
@@ -42,12 +42,12 @@ option_list <- list(
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
-# Verificar que ambos argumentos fueron suministrados
+# Verificar que ambos argumentos fueron suministrados.
 if (is.null(opt$input_file) || is.null(opt$muestra)) {
   stop("Faltan argumentos. Debes proporcionar el archivo de datos y el nombre de la muestra. Ejemplo: ./mi_script.R --in coberturas_finales.tsv --muestra CPA-XXXX-2025", call. = FALSE)
 }
 
-# Asignar a variables
+# Asignar a variables.
 input_file <- opt$input_file
 sample_name <- opt$muestra
 
@@ -63,20 +63,18 @@ if (!file.exists(input_file)) {
 # 4. SCRIPT
 # ---------------------- #
 
-# Leer datos y renombrar
+# Leer datos.
 df_reads <- suppressMessages(read_tsv(input_file, show_col_types = FALSE))
 
-# Confirmación de lectura y datos
+# Confirmación de lectura y datos.
 message("✅ Archivo leído correctamente: ", input_file)
-message("- Número de filas: ", nrow(df_reads))
-message("- Número de columnas: ", ncol(df_reads))
 message("- Muestra procesada: ", sample_name)
 message("💻 Limpiando y procesando")
 
-# Calcular cuántas lecturas alineadas no se usaron en los ensambles
+# Calcular cuántas lecturas alineadas no se usaron en los ensambles.
 Lecturas_no_usadas = sum(df_reads$Lecturas_alineadas) - sum(df_reads$Lecturas_ensamblaje) 
 
-# Limpiar df, agregar lecturas no usadas, y crear etiquetas
+# Limpiar df, agregar lecturas no usadas, y crear etiquetas.
 df_limpio <- df_reads %>% 
   select(Segmento, Lecturas_alineadas) %>% 
   rename(Lecturas = Lecturas_alineadas) %>% 
@@ -84,12 +82,12 @@ df_limpio <- df_reads %>%
   mutate(Porcentaje = Lecturas/sum(Lecturas) * 100,
          etiqueta = sprintf("%s\n(%.2f%%)", scales::comma(Lecturas), Porcentaje))
 
-# Definir la relación entre Lecturas y Porcentaje
+# Definir la relación entre Lecturas y Porcentaje.
 # Por ejemplo, suponiendo que 100% = suma total de lecturas
 total_lecturas <- sum(df_limpio$Lecturas)
 factor_conversion <- total_lecturas / 100
 
-# Define los breaks del eje secundario (porcentajes deseados)
+# Define los breaks del eje secundario. Se deben pasar por el factor de conversión.
 breaks_secundario <- seq(0, 30, by = 5)
 breaks_principal <- breaks_secundario * factor_conversion
 
