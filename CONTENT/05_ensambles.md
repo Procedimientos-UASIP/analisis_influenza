@@ -19,8 +19,13 @@ mkdir -p ENSAMBLE/SPADES/S{1..8}
 cd ENSAMBLE/SPADES/S1
 ```
 
+3. Activar ambiente conda de los ensambladores
+```bash
+conda activate ensamble
+```
+
 ### Ensamble
-3. Hacer el ensamblaje en dicha ubicación. Este paso implica especificar todos los kmeros a usar y, cuando se obtengan ensambles a nivel de scaffolds, realizar un blast de los resultados obtenidos para revisar el kmero que realizó el mejor ensamblade. Como esto implica mucho procesamiento en bucle, se encapsuló el proceso en un sólo script. **Cuidar de modificar archivos de entrada, kmeros, output y log**. Un ejemplo de su implementación es la siguiente:
+4. Hacer el ensamblaje en dicha ubicación. Este paso implica especificar todos los kmeros a usar y, cuando se obtengan ensambles a nivel de scaffolds, realizar un blast de los resultados obtenidos para revisar el kmero que realizó el mejor ensamblade. Como esto implica mucho procesamiento en bucle, se encapsuló el proceso en un sólo script. **Cuidar de modificar archivos de entrada, kmeros, output y log**. Un ejemplo de su implementación es la siguiente:
 
 ```bash
 echo "S" | nohup ~/analisis_influenza/bin/ensamble.sh -a ../../../ALINEAMIENTO/BWA/S1/s1_reads_r1.fq.gz -b ../../../ALINEAMIENTO/BWA/S1/s1_reads_r2.fq.gz -x ../../../ALINEAMIENTO/BWA/S1/s1_reads_u1.fq.gz -y ../../../ALINEAMIENTO/BWA/S1/s1_reads_u2.fq.gz -t 26 --kini 11 --kfin 127 -o OUT_11_127 >log_11_127 2>&1 &
@@ -28,28 +33,42 @@ echo "S" | nohup ~/analisis_influenza/bin/ensamble.sh -a ../../../ALINEAMIENTO/B
 
 Realizar el análisis hasta los kmeros que se consideren pertinentes (min. 11, max. 127).
 
-4. Ejecutar el script para unir todos los BLAST resultantes depositatos en las carpetas llamadas OUT_*. Ejecutar aunque sólo haya un directorio de salida.
+5. Ejecutar el script para unir todos los BLAST resultantes depositatos en las carpetas llamadas OUT_*. Ejecutar aunque sólo haya un directorio de salida.
 ```bash
 ~/analisis_influenza/bin/merge_blast_results.sh
 ```
 
-5. Revisar el archivo resultante para asegurar que existan resultados de blast con algunos kmeros.
+6. Revisar el archivo resultante para asegurar que existan resultados de blast con algunos kmeros.
 
-6. Procesar el archivo con el siguiente script para identificar la el mejor alineamiento, más extenso y con la mejor covertura. Se generará además la carpeta de PROFUNDIDAD con la profundidad obtenida para el segmento. Ejecutar en ambiente alineamiento. Modificar el nombre de archivo correspondiente:
+7. Procesar el archivo con el siguiente script para identificar la el mejor alineamiento, más extenso y con la mejor covertura. Se generará además la carpeta de PROFUNDIDAD con la profundidad obtenida para el segmento. Ejecutar en ambiente alineamiento. Modificar el nombre de archivo correspondiente:
 ```bash
 conda activate alineamiento
 ~/analisis_influenza/bin/ensamble_analyze_blast.sh S1_blastn-careful_merged.txt
 ```
 
-7. Repetir desde el paso 2, modificando cada carpeta correspondiente a cada segmento.
+8. Repetir desde el paso 2, modificando cada carpeta correspondiente a cada segmento.
 
-8. Para unir todos las profundidades de todos los segmentos, posicionarse en la carpeta con todas las subcarpetas de segmentos (ENSAMBLE/SPADES/) y ejecutar el script indicando la ubicación de cada archivo a unir:
+9. Para unir todos las profundidades de todos los segmentos, posicionarse en la carpeta con todas las subcarpetas de segmentos (ENSAMBLE/SPADES/) y ejecutar el script indicando la ubicación de cada archivo a unir:
 ```bash
 ~/analisis_influenza/bin/unir_profundidades.sh --S1 S1/COBERTURA/S1_cobertura --S2 S2/COBERTURA/S2_cobertura --S3 S3/COBERTURA/S3_cobertura --S4 S4/COBERTURA/S4_cobertura --S5 S5/COBERTURA/S5_cobertura --S6 S6/COBERTURA/S6_cobertura --S7 S7/COBERTURA/S7_cobertura --S8 S8/COBERTURA/S8_cobertura
 ```
 
-9. Graficar profundidades. Indicar archivo donde se unieron las profundidades y el nombre de la muestra:
+11. Ejecutar este script para calcular el porcentaje de lecturas ensambladas de acuerdo a las que se filtraron por el alineamiento
+```bash
+~/analisis_influenza/bin/
+```
+
+12. Activar ambiente conda para graficar en R
 ```bash
 conda activate R
+```
+
+13. Graficar profundidades. Indicar archivo donde se unieron las profundidades, así como el nombre de la muestra:
+```bash
 ~/analisis_influenza/bin/graficar_profundidad.R --input_file coberturas_finales.tsv --muestra CPA-00245-25-P1-1
+```
+
+1.  Graficar profundidades. Indicar archivo donde se unieron los datos de las lecturas usadas, así como el nombre de la muestra:
+```bash
+~/analisis_influenza/bin/graficar_lecturas.R --input_file uso_de_lecturas.tsv --muestra CPA-00245-25-P1-1
 ```
