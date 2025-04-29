@@ -5,26 +5,17 @@ La Influenza aviar es una enfermedad viral causada por el virus de la gripe avia
 Los códigos depositados a continuación son una resumen práctico del "PROCEDIMIENTO PARA EL ANÁLISIS DE DATOS DE INFLUENZA AVIAR POR SECUENCIACIÓN MASIVA MEDIANTE LA TÉCNICA DE ILLUMINA (SUBTIPIFICACIÓN Y PATOGENICIDAD)", con código CPA-PD-#####, desarrollado e implementado por la UASIP-CENAPA-SENASICA.
 
 ## Código
-Se deberá estar posicionado en la carpeta de trabajo de la muestra, ej. */home/CPA-12345-24/*.  Los nombres de los archivos en las siguientes instrucciones deben ajustarse a los requerimientos de los archivos a usar. Se indica con corchetes los argumentos que deben/pueden modificarse. A partir de esta estructura de archivos, se procesan los archivos de la siguiente manera:
 
-### Alineamiento
+Se deberá estar posicionado en la carpeta correspondiente al segmento 4. Se debe suministrar al script el archivo que tiene el mejor ensamble con su direccionalidad corregida.
 
-1. Hacer carpeta de resultado finales
+1. Hacer una traduccion de los 3 marcos de lectura para identificar el marco paros en la seccion media (correspondiente al ORF).
 ``bash
-mkdir resultados_enviar 
-```
-En esa carpeta se colocarán todos los archivos fasta y graficas que se hicieron para las muestras o muestra
-
-2. Crear carpeta de estadisticas en TRIMMED
-``bash
-mkdir stats_all  
+seqkit translate [BEST_RESULT_S4_SEQUENCE_CORRECTED] -f1,2,3 -F 
 ```
 
-3. Copiar ensambles de cada segmento  a la carpeta stats_all
-```bash
-cat ../s{1..8}/s{1..8}_$(pwd | awk -F'/' '{print $(NF-2)}').fasta 2>/dev/null | \
-  awk '/^>/ { if (NR != 1) print ""; print $0; next } {printf "%s", $0 }' > $(pwd | awk -F'/' '{print $(NF-2)}').fasta 
+2. Ejecutar el script para determinar la presencia del motivo caracteristico de alta patogenicidad (PXnGLF, donde Xn son residuos positivos (K, H, R), principalmente)
+``bash
+~/analisis_influenza/bin/analisis_patogenicidad.sh  [BEST_RESULT_S4_SEQUENCE_CORRECTED]
+```
 
-
-
-
+3. El analisis se hace en todos los marcos de lectura de la secuencia original y su reverso complementario, para cubrir todas las opciones. Identificar el marco donde apareció el ORF en la dirección sentido (+). Debería mostrarse el resultado del analisis (HPAI o LPAI) y la secuencia encontrada.
