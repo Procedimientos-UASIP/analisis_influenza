@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Archivo de salida
-SALIDA="uso_de_lecturas.txt"
+SALIDA="uso_de_lecturas.tsv"
 
 # Título informativo
 echo "📋 Calculando porcentaje de lecturas usadas en ensamblaje de novo para cada segmento (S1-S8)..."
