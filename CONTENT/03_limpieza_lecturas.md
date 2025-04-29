@@ -27,8 +27,9 @@ ln -s ./RAW/[LecturasR2] R2.fq.gz
 mkdir CALIDAD_CRUDA
 ```
 
-5. Ejecutar el análisis de calidad.
+5. Ejecutar el análisis de calidad. Usar ambiente calidad
 ```bash
+conda activate calidad
 fastqc R1.fq.gz R2.fq.gz --outdir ./CALIDAD_CRUDA --threads 14 
 ```
 
@@ -37,6 +38,7 @@ fastqc R1.fq.gz R2.fq.gz --outdir ./CALIDAD_CRUDA --threads 14
 2. Ejecutar el programa de limpieza. Ajustar parámetros de acuerdo a las necesidades. Cuidado al modificar los cores (ver documentación). Los resultados se guardarán en ./TRIMMING/
 ```bash
 trim_galore --paired --retain_unpaired --gzip --fastqc --cores 6 --clip_R1 18 --clip_R2 18 --three_prime_clip_R1 2 --three_prime_clip_R2 2 --length 180 -o TRIMMING/ R1.fq.gz R2.fq.gz
+conda deactivate calidad
 ```
 
 1. Revisar los archivos HTML de salida para verificar los resultados de la limpieza. Queda a consideración de la experiencia del usuario el quedar conforme con la limpieza realizada. 
