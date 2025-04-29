@@ -10,5 +10,5 @@ Los scripts informáticos aquí depositados son utilizados por la Unidad de Aten
 4. [Limpiar lecturas](https://github.com/Procedimientos-UASIP/analisis_influenza/blob/main/CONTENT/03_limpieza_lecturas.md)
 5. [Alinear lecturas](https://github.com/Procedimientos-UASIP/analisis_influenza/blob/main/CONTENT/04_alineamientos.md)
 6. [Ensamblar lecturas](https://github.com/Procedimientos-UASIP/analisis_influenza/blob/main/CONTENT/05_ensambles.md)
-7. Análisis de patogenicidad
+7. [Análisis de patogenicidad](https://github.com/Procedimientos-UASIP/analisis_influenza/blob/main/CONTENT/06_subtipos_y_patogenicidad.md)
 8. Análisis filogenético
