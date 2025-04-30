@@ -179,11 +179,13 @@ for KMER in $(seq "$KINI" 2 "$KFIN"); do
         "$KMER" "$((RUN_TIME_FOR/60))" "$((RUN_TIME_FOR%60))"
 done
 
-# Registrar tiempo de inicio del script
-END=$SECONDS
-
 # Calcular segundos que tomó correr el script
-RUN_TIME=$((END-START))
+RUN_TIME=$((END - START))
 
-# Imprimir tiempo el tiempo que tomó correr el script
-printf "\nEl script tardó %s minutos, %s segundos\n\n" "$((RUN_TIME/60))" "$((RUN_TIME%60))"
+# Calcular horas, minutos y segundos
+HOURS=$((RUN_TIME / 3600))
+MINUTES=$(((RUN_TIME % 3600) / 60))
+SECONDS=$((RUN_TIME % 60))
+
+# Imprimir tiempo formateado
+printf "\nEl script tardó %02d horas, %02d minutos, %02d segundos\n\n" "$HOURS" "$MINUTES" "$SECONDS"
