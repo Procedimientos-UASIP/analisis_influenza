@@ -6,16 +6,33 @@ Los códigos depositados a continuación son una resumen práctico del "PROCEDIM
 
 ## Código
 
-Se deberá estar posicionado en la carpeta correspondiente al segmento 4. Se debe suministrar al script el archivo que tiene el mejor ensamble con su direccionalidad corregida.
+### Subtipificación
 
-1. Hacer una traduccion de los 3 marcos de lectura para identificar el marco paros en la seccion media (correspondiente al ORF).
-``bash
+Si bien la identificación de un genoma viral en su totalidad se da en función de la identidad de sus segmentos 4 y 6 (que codifican para las proteinas hemaglutinina y neuraminidasa, respectivamente), es posible darles una identidad a los otros segmentos en función de su presencia en distintos contextos HxNy, lo cual a su vez es una evidencia indirecta de eventos de recombinación genética entre segmentos de distintos virus. Para determinar el subtipo viral, se hará un blast de la secuencia ensamblada de cada segmento contra la base de datos de virus de NCBI, se obtendrán todos los subjects con los que se hagan match, y se obtendrá un porcentaje que representará la cantidad de subjects que hicieron match con determinado segmento HxNy.
+
+Para realizar lo anterios, se diseño un script con todas las instrucciones para realizar lo anterior:
+
+1. Ubicarse en la carpeta correspondiente a cada segmento ensamblado, donde se encuentra el archivo fasta con el mejor ensamble corregido.
+
+2. Ejecutar el script indicando el archivo que va a utilizarse como query:
+```bash
+~/analisis_influenza/bin/analisis_subtipificacion.sh S1_blastn-careful_merged.txt
+```
+
+3. Se genera un archivo Sx_subtipos_top5.tsv, que contiene una tabla con los principales subtipos contra los que se hizo match. 
+
+### Patogenicidad
+
+Se deberá estar posicionado en la carpeta correspondiente al segmento 4. Además, se debe suministrar al script el archivo que tiene el mejor ensamble con su direccionalidad corregida.
+
+4. Hacer una traduccion de los 3 marcos de lectura para identificar el marco paros en la seccion media (correspondiente al ORF).
+```bash
 seqkit translate [BEST_RESULT_S4_SEQUENCE_CORRECTED] -f1,2,3 -F 
 ```
 
-2. Ejecutar el script para determinar la presencia del motivo caracteristico de alta patogenicidad (PXnGLF, donde Xn son residuos positivos (K, H, R), principalmente)
-``bash
+5. Ejecutar el script para determinar la presencia del motivo caracteristico de alta patogenicidad (PXnGLF, donde Xn son residuos positivos (K, H, R), principalmente)
+```bash
 ~/analisis_influenza/bin/analisis_patogenicidad.sh  [BEST_RESULT_S4_SEQUENCE_CORRECTED]
 ```
 
-3. El analisis se hace en todos los marcos de lectura de la secuencia original y su reverso complementario, para cubrir todas las opciones. Identificar el marco donde apareció el ORF en la dirección sentido (+). Debería mostrarse el resultado del analisis (HPAI o LPAI) y la secuencia encontrada.
+6. El analisis se hace en todos los marcos de lectura de la secuencia original y su reverso complementario, para cubrir todas las opciones. Identificar el marco donde apareció el ORF en la dirección sentido (+). Debería mostrarse el resultado del analisis (HPAI o LPAI) y la secuencia encontrada.
