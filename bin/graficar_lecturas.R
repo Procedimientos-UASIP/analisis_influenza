@@ -90,7 +90,7 @@ df_totales <- df_limpio %>%
   summarise(Total = sum(Lecturas), .groups = "drop")
 
 # Unir los totales y calcular porcentaje de cada componente
-df_limpio <- df_limpio %>%
+df_limpio_2 <- df_limpio %>%
   left_join(df_totales, by = "Segmento") %>%
   mutate(Porcentaje = (Lecturas / Total) * 100,
          etiqueta = if_else(Tipo == "Usadas",
@@ -104,19 +104,17 @@ total_ensambladas <- sum(df_reads$Lecturas_ensamblaje)
 porcentaje_total <- (total_ensambladas / total_alineadas) * 100
 
 # Crear subtítulo dinámico
-subtitulo <- sprintf(
-  "Muestra: %s\n%s/%s (Alineadas/Ensambladas) (%.2f%%)",
+subtitulo <- sprintf("Muestra: %s\n%s / %s (Alineadas / Ensambladas) (%.2f%%)",
   sample_name,
   scales::comma(total_alineadas),
   scales::comma(total_ensambladas),
-  porcentaje_total
-  )
+  porcentaje_total)
 
 # Graficar
-p1 <- df_limpio %>% 
+p1 <- df_limpio_2 %>% 
   ggplot(aes(x = Segmento , y = Lecturas, fill = Tipo)) +
   geom_bar(stat = "identity", color = "black") +
-  geom_text(data = df_limpio %>% filter(!is.na(etiqueta)),
+  geom_text(data = df_limpio_2 %>% filter(!is.na(etiqueta)),
     aes(label = etiqueta, y = Lecturas_alineadas),
     vjust = -0.2,  # ajusta verticalmente
     size = 5
