@@ -33,6 +33,7 @@ echo "S" | nohup ~/analisis_influenza/bin/ensamble.sh -a ../../../ALINEAMIENTO/B
 
 Realizar el análisis hasta los kmeros que se consideren pertinentes (min. 11, max. 127).
 
+### Mejor ensamble y cálculo de profundidad
 5. Ejecutar el script para unir todos los BLAST resultantes depositatos en las carpetas llamadas OUT_*. Ejecutar aunque sólo haya un directorio de salida.
 ```bash
 ~/analisis_influenza/bin/merge_blast_results.sh
@@ -45,9 +46,11 @@ Realizar el análisis hasta los kmeros que se consideren pertinentes (min. 11, m
 conda activate alineamiento
 ~/analisis_influenza/bin/ensamble_analyze_blast.sh S1_blastn-careful_merged.txt
 ```
+NOTA: En caso de observar el mensaje "\[W::bam_merge_core2\] No @HD tag found.", ignorarlo, pues es sólo una advertencia de samtools.
 
 8. Repetir desde el paso 2, modificando cada carpeta correspondiente a cada segmento.
 
+### Unir profundidades y calcular porcentaje de lecturas usadas
 9. Para unir todos las profundidades de todos los segmentos, posicionarse en la carpeta con todas las subcarpetas de segmentos (ENSAMBLE/SPADES/) y ejecutar el script indicando la ubicación de cada archivo a unir:
 ```bash
 ~/analisis_influenza/bin/unir_profundidades.sh --S1 S1/COBERTURA/S1_cobertura --S2 S2/COBERTURA/S2_cobertura --S3 S3/COBERTURA/S3_cobertura --S4 S4/COBERTURA/S4_cobertura --S5 S5/COBERTURA/S5_cobertura --S6 S6/COBERTURA/S6_cobertura --S7 S7/COBERTURA/S7_cobertura --S8 S8/COBERTURA/S8_cobertura
@@ -58,6 +61,7 @@ conda activate alineamiento
 ~/analisis_influenza/bin/ensamble_cal_porc_lect_mapeadas.sh
 ```
 
+### Graficar profundidades y uso de lecturas
 11. Activar ambiente conda para graficar en R
 ```bash
 conda activate R
@@ -68,7 +72,7 @@ conda activate R
 ~/analisis_influenza/bin/graficar_profundidad.R --input_file coberturas_finales.tsv --muestra CPA-00245-25-P1-1
 ```
 
-13.  Graficar profundidades. Indicar archivo donde se unieron los datos de las lecturas usadas, así como el nombre de la muestra:
+13.  Graficar porcentaje de lecturs usadas. Indicar archivo donde se unieron los datos de las lecturas usadas, así como el nombre de la muestra:
 ```bash
 ~/analisis_influenza/bin/graficar_lecturas.R --input_file uso_de_lecturas.tsv --muestra CPA-00245-25-P1-1
 ```
