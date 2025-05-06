@@ -19,7 +19,7 @@ for i in {1..8}; do
     SEGMENTO="S${i}"
 
     # Verificar existencia de archivos necesarios
-    READS_USADAS_ENSAMBLE="${SEGMENTO}/COBERTURA/${SEGMENTO}_all_sorted.bam"
+    READS_USADAS_ENSAMBLE="${SEGMENTO}/PROFUNDIDAD/${SEGMENTO}_all_sorted.bam"
     PATH_READS_POR_SEGMENTO="../../ALINEAMIENTO/BWA/${SEGMENTO}"
 
     if [ ! -f "$READS_USADAS_ENSAMBLE" ]; then

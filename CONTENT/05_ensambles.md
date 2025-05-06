@@ -53,7 +53,7 @@ NOTA: En caso de observar el mensaje "\[W::bam_merge_core2\] No @HD tag found.",
 ### Unir profundidades y calcular porcentaje de lecturas usadas
 9. Para unir todos las profundidades de todos los segmentos, posicionarse en la carpeta con todas las subcarpetas de segmentos (ENSAMBLE/SPADES/) y ejecutar el script indicando la ubicación de cada archivo a unir:
 ```bash
-~/analisis_influenza/bin/unir_profundidades.sh --S1 S1/COBERTURA/S1_cobertura --S2 S2/COBERTURA/S2_cobertura --S3 S3/COBERTURA/S3_cobertura --S4 S4/COBERTURA/S4_cobertura --S5 S5/COBERTURA/S5_cobertura --S6 S6/COBERTURA/S6_cobertura --S7 S7/COBERTURA/S7_cobertura --S8 S8/COBERTURA/S8_cobertura
+~/analisis_influenza/bin/unir_profundidades.sh --S1 S1/PROFUNDIDAD/S1_profundidad --S2 S2/PROFUNDIDAD/S2_profundidad --S3 S3/PROFUNDIDAD/S3_profundidad --S4 S4/PROFUNDIDAD/S4_profundidad --S5 S5/PROFUNDIDAD/S5_profundidad --S6 S6/PROFUNDIDAD/S6_profundidad --S7 S7/PROFUNDIDAD/S7_profundidad --S8 S8/PROFUNDIDAD/S8_profundidad
 ```
 
 10. Ejecutar este script para calcular el porcentaje de lecturas ensambladas de acuerdo a las que se filtraron por el alineamiento
