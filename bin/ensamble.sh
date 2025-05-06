@@ -179,6 +179,9 @@ for KMER in $(seq "$KINI" 2 "$KFIN"); do
         "$KMER" "$((RUN_TIME_FOR/60))" "$((RUN_TIME_FOR%60))"
 done
 
+# Registrar tiempo de inicio del script
+END=$SECONDS
+
 # Calcular segundos que tomó correr el script
 RUN_TIME=$((END - START))
 
