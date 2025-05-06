@@ -74,42 +74,78 @@ message("💻 Limpiando y procesando")
 # Calcular cuántas lecturas alineadas no se usaron en los ensambles.
 Lecturas_no_usadas = sum(df_reads$Lecturas_alineadas) - sum(df_reads$Lecturas_ensamblaje) 
 
-# Limpiar df, agregar lecturas no usadas, y crear etiquetas.
-df_limpio <- df_reads %>% 
-  select(Segmento, Lecturas_alineadas) %>% 
-  rename(Lecturas = Lecturas_alineadas) %>% 
-  add_row(Segmento = "No usadas", Lecturas = Lecturas_no_usadas) %>% 
-  mutate(Porcentaje = Lecturas/sum(Lecturas) * 100,
-         etiqueta = sprintf("%s\n(%.2f%%)", scales::comma(Lecturas), Porcentaje))
+# Calcular lecturas no ensambladas por segmento
+df_limpio <- df_reads %>%
+  mutate(Lecturas_no_usadas = Lecturas_alineadas - Lecturas_ensamblaje) %>%
+  pivot_longer(
+    cols = c(Lecturas_ensamblaje, Lecturas_no_usadas),
+    names_to = "Tipo",
+    values_to = "Lecturas"
+  ) %>%
+  mutate(Tipo = recode(Tipo, "Lecturas_ensamblaje" = "Usadas", "Lecturas_no_usadas" = "No usadas"))
 
-# Definir la relación entre Lecturas y Porcentaje.
-# Por ejemplo, suponiendo que 100% = suma total de lecturas
-total_lecturas <- sum(df_limpio$Lecturas)
-factor_conversion <- total_lecturas / 100
+# Calcular totales por segmento para porcentajes
+df_totales <- df_limpio %>%
+  group_by(Segmento) %>%
+  summarise(Total = sum(Lecturas), .groups = "drop")
 
-# Define los breaks del eje secundario. Se deben pasar por el factor de conversión.
-breaks_secundario <- seq(0, 30, by = 5)
-breaks_principal <- breaks_secundario * factor_conversion
+# Unir los totales y calcular porcentaje de cada componente
+df_limpio <- df_limpio %>%
+  left_join(df_totales, by = "Segmento") %>%
+  mutate(Porcentaje = (Lecturas / Total) * 100,
+         etiqueta = if_else(Tipo == "Usadas",
+                       sprintf("%s\n(%.2f%%)", scales::comma(Lecturas), Porcentaje),
+                       NA_character_)  # Solo etiquetar parte usada
+  )
+
+# Calcular sumatorias totales
+total_alineadas <- sum(df_reads$Lecturas_alineadas)
+total_ensambladas <- sum(df_reads$Lecturas_ensamblaje)
+porcentaje_total <- (total_ensambladas / total_alineadas) * 100
+
+# Crear subtítulo dinámico
+subtitulo <- sprintf(
+  "Muestra: %s\n%s/%s (Alineadas/Ensambladas) (%.2f%%)",
+  sample_name,
+  scales::comma(total_alineadas),
+  scales::comma(total_ensambladas),
+  porcentaje_total
+  )
 
 # Graficar
 p1 <- df_limpio %>% 
-  ggplot(aes(x = Segmento , y = Lecturas, fill = Segmento)) +
+  ggplot(aes(x = Segmento , y = Lecturas, fill = Tipo)) +
   geom_bar(stat = "identity", color = "black") +
-  geom_text(aes(label = etiqueta), vjust = -0.5, size = 5) +
-    labs(title = "Lecturas usadas para el ensamblaje de\nlos segmentos de Influenza tipo A",
-    subtitle = paste0( "Muestra: ",sample_name)) +
+  geom_text(data = df_limpio %>% filter(!is.na(etiqueta)),
+    aes(label = etiqueta, y = Lecturas_alineadas),
+    vjust = -0.2,  # ajusta verticalmente
+    size = 5
+  ) +
+  labs(
+    title = "Porcentajes de uso de lecturas en ensambles",
+    subtitle = subtitulo,
+    x = "Segmento"
+  ) +
   scale_y_continuous(
     name = "Lecturas",
+    breaks = seq(0,1000000, 25000),
     labels = scales::comma,
-    sec.axis = sec_axis(~ . / factor_conversion, name = "Porcentaje (%)", breaks = breaks_secundario), 
+    #sec.axis = sec_axis(~ . / factor_conversion, name = "Porcentaje (%)", breaks = breaks_secundario), 
     expand = expansion(mult = c(0,0.15))) +
-  scale_fill_manual(values = pals::brewer.set1(9)) + 
+  scale_fill_manual(
+    values = c("Usadas" = "#4DAF4A", "No usadas" = "#E41A1C"),
+    name = "Tipo de lectura"
+  ) + 
   theme_bw() +
-  theme(plot.title = element_text(size = 18, face = "bold"), 
-        plot.subtitle = element_text(size = 16),
-        axis.title = element_text(size = 22, face = "bold"),
-        axis.text = element_text(size = 16, color = "black"),
-        legend.position = "none")
+  theme(
+    plot.title = element_text(size = 22, face = "bold"),
+    plot.subtitle = element_text(size = 18),
+    axis.title = element_text(size = 22, face = "bold"),
+    axis.text = element_text(size = 16, color = "black"),
+    legend.position = "bottom",
+    legend.title = element_text(size = 18),
+    legend.text = element_text(size = 16)
+  )
 
 # Guardar plot
 ggsave(filename = paste0(sample_name, "_lecturas.png"), plot = p1, device = "png", units = "cm", width = 28, height = 22)
