@@ -104,12 +104,12 @@ fi
 
 echo "✅ Secuencia corregida guardada en: $corrected_output"
 
-echo "➤ Calculando cobertura de lecturas de S${SEGMENT_NUMBER} en mejor secuencia ensamblada."
+echo "➤ Calculando profundidad de lecturas de S${SEGMENT_NUMBER} en mejor secuencia ensamblada."
 
 # conda activate alineamiento
 
-# Crear un archivo para calcular cobertura en el mejor ensamble obtenido
-mkdir COBERTURA && cd COBERTURA
+# Crear un archivo para calcular la profundidad en cada posición del mejor ensamble obtenido
+mkdir PROFUNDIDAD && cd PROFUNDIDAD
 
 # Crear link simbolico al fasta con el mejor ensamble para no copiar archivos 
 ln -s "../best_result_S${SEGMENT_NUMBER}_sequence.fna" .
@@ -138,7 +138,7 @@ bwa-mem2 mem -t 20 "best_result_S${SEGMENT_NUMBER}_sequence.fna" \
 samtools merge -u - "S${SEGMENT_NUMBER}_paired.sam" "S${SEGMENT_NUMBER}_unpaired_r1.sam" "S${SEGMENT_NUMBER}_unpaired_r2.sam" | samtools sort -o "S${SEGMENT_NUMBER}_all_sorted.bam" && rm "S${SEGMENT_NUMBER}_paired.sam" "S${SEGMENT_NUMBER}_unpaired_r1.sam" "S${SEGMENT_NUMBER}_unpaired_r2.sam"
 
 echo -e "\t➤ Calculando profundidades"
-samtools depth -o "S${SEGMENT_NUMBER}_cobertura" -H -a "S${SEGMENT_NUMBER}_all_sorted.bam"
+samtools depth -o "S${SEGMENT_NUMBER}_profundidad" -H -a "S${SEGMENT_NUMBER}_all_sorted.bam"
 
 # Regresar al directorio anterior
 cd ..
