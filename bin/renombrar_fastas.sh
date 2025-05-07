@@ -45,7 +45,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Validar que todas las opciones hayan sido asignadas
-
 if [[ "$HOST" == "undefined" ]]; then
     echo "❌ Error: Falta especificar la opción --host." >&2
     exit 1
@@ -60,7 +59,6 @@ if [[ "$YEAR" == "undefined" ]]; then
     echo "❌ Error: Falta especificar la opción --year." >&2
     exit 1
 fi
-
 
 # Obtener nombre de la muestra desde dos niveles arriba del directorio actual
 SAMPLE_NAME=$(basename "$(dirname "$(dirname "$PWD")")")
