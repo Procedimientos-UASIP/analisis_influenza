@@ -16,7 +16,7 @@ Para realizar lo anterios, se diseño un script con todas las instrucciones para
 
 2. Ejecutar el script indicando el archivo que va a utilizarse como query:
 ```bash
-~/analisis_influenza/bin/analisis_subtipificacion.sh S1_blastn-careful_merged.txt
+~/analisis_influenza/bin/analisis_subtipificacion.sh best_result_S1_sequence_corrected.fna
 ```
 
 3. Se genera un archivo Sx_subtipos_top5.tsv, que contiene una tabla con los principales subtipos contra los que se hizo match. 
