@@ -52,7 +52,7 @@ for key in "${valid_keys[@]}"; do
 done
 
 # Guardar header en archivo final
-echo -e "$header" > coberturas_finales.tsv
+echo -e "$header" > profundidades_finales.tsv
 
 # Construcción del comando paste dinámico
 awk_commands=()
@@ -62,4 +62,4 @@ for key in "${orden[@]}"; do
 done
 
 # Ejecuta el paste y añade columna POS.
-eval paste "${awk_commands[*]}" | awk '{ print NR "\t" $0 }' >> coberturas_finales.tsv
+eval paste "${awk_commands[*]}" | awk '{ print NR "\t" $0 }' >> profundidades_finales.tsv
