@@ -83,24 +83,6 @@ print_variables() {
 # Llamada a la función de impresión
 print_variables
 
-# Confirmar si los parámetros son correctos antes de continuar
-while true; do
-    read -rp "¿Los parámetros son correctos? (S/N): " RESPUESTA
-    case "${RESPUESTA,,}" in  # convierte a minúsculas para admitir s/S/n/N
-        s|si)
-            printf "✅ Continuando con el procesamiento...\n\n"
-            break
-            ;;
-        n|no)
-            printf "🛑 Ejecución cancelada por el usuario.\n\n"
-            exit 0
-            ;;
-        *)
-            printf "❗ Entrada no válida. Por favor responde 'S' (sí) o 'N' (no).\n\n"
-            ;;
-    esac
-done
-
 # Verificación y creación del directorio
 if [ -d "$OUTDIR" ]; then
         echo "❌ Error: El directorio '$OUTDIR' ya existe. No se puede sobrescribir." >&2
