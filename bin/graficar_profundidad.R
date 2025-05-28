@@ -102,27 +102,40 @@ df_prof_long <- df_prof %>%
   arrange(Segmento) %>% 
   filter(!is.na(Profundidad))
 
+# Calcular promedio de profundidades y darles formato
+df_avg <- df_prof_long %>%
+  group_by(Segmento) %>%
+  summarise(profundidad_promedio = mean(Profundidad, na.rm = TRUE)) %>%
+  mutate(
+    profundidad_formateada = scales::comma_format(accuracy = 0.1)(profundidad_promedio),
+    titulo = paste0(Segmento, ". Profundidad promedio = ", profundidad_formateada))
+
+# Sustituir etiquedas
+df_prof_long_labeled <- df_prof_long %>%
+  left_join(df_avg, by = "Segmento") %>%
+  mutate(Segmento = factor(titulo, levels = unique(titulo)))
+
 # Graficar
-plot_prof <- df_prof_long %>% 
+df_prof_long_labeled  %>% 
   ggplot(aes(x = Posición, y = Profundidad, color = Segmento))+
-  facet_wrap(~ Segmento, ncol = 1, strip.position = "right", scales = "free_y") +
+  facet_wrap(~ Segmento, ncol = 2, strip.position = "top", scales = "free_y") +
   geom_line(linewidth = 1.5) +
-  scale_x_continuous(breaks = seq (0,max(df_prof_long$Posición), 100), labels = scales::comma) +
+  scale_color_manual(values = pals::brewer.set1(nlevels(df_prof_long_labeled$Segmento))) +
+  labs(title = "Profundidad de secuenciación de los segmentos de Influenza tipo A",
+       subtitle = paste0( "Muestra: ",sample_name)) +
+  scale_x_continuous(breaks = seq (0,max(df_prof_long_labeled$Posición), 100), labels = scales::comma) +
   scale_y_continuous(labels = scales::comma) +
-  scale_color_manual(values = pals::brewer.set1(length(colnames(df_prof)) -1)) +
-  labs(title = "Profundidad de secuenciación de los segmentos\nde Influenza tipo A",
-    subtitle = paste0( "Muestra: ",sample_name)) +
   theme_bw() +
-  theme(plot.title = element_text(size = 18, face = "bold"), 
+  theme(plot.title = element_text(size = 20), 
         plot.subtitle = element_text(size = 16),
-        axis.text.x = element_text(color = "black", size = 10, angle = 90, vjust = 0.5, hjust = 1), 
-        axis.text.y = element_text(color = "black", size = 10),
+        axis.text.x = element_text(size = 8, angle = 90, vjust = 0.5, hjust = 1), 
+        axis.text.y = element_text(size = 8),
         legend.position = "none", 
         axis.title = element_text(size = 20),
         strip.background = element_blank(),
-        strip.text = element_text(size = 8, face = "bold"))
+        strip.text = element_text(size = 10, face = "bold"))
 
 # Guardar plot
-ggsave(filename = paste0(sample_name, "_profundidades.png"), plot = plot_prof, device = "png", units = "cm", width = 20, height = 26)
+ggsave(filename = paste0(sample_name, "_profundidades.png"), device = "png", units = "cm", width = 24, height = 14)
 
 message("📄 Gráfica producida. Finalizando")
