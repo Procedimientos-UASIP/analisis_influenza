@@ -34,7 +34,7 @@ for (pkg in c("tidyverse", "optparse")) {
 # ---------------------- #
 
 option_list <- list(
-  make_option(c("--input_file"), dest = "input_file", type = "character", help = "Archivo de datos (ej: coberturas_finales.tsv)"),
+  make_option(c("--input_file"), dest = "input_file", type = "character", help = "Archivo de datos (ej: profundidades_finales.tsv)"),
   make_option(c("--muestra"), dest = "muestra", type = "character", help = "Nombre de la muestra a procesar")
 )
 
@@ -44,7 +44,7 @@ opt <- parse_args(opt_parser)
 
 # Verificar que ambos argumentos fueron suministrados
 if (is.null(opt$input_file) || is.null(opt$muestra)) {
-  stop("Faltan argumentos. Debes proporcionar el archivo de datos y el nombre de la muestra. Ejemplo: ./mi_script.R --in coberturas_finales.tsv --muestra CPA-XXXX-2025", call. = FALSE)
+  stop("Faltan argumentos. Debes proporcionar el archivo de datos y el nombre de la muestra. Ejemplo: ./mi_script.R --in profundidades_finales.tsv --muestra CPA-XXXX-2025", call. = FALSE)
 }
 
 # Asignar a variables
