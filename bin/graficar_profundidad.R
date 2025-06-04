@@ -116,7 +116,7 @@ df_prof_long_labeled <- df_prof_long %>%
   mutate(Segmento = factor(titulo, levels = unique(titulo)))
 
 # Graficar
-df_prof_long_labeled  %>% 
+p1 <- df_prof_long_labeled  %>% 
   ggplot(aes(x = Posición, y = Profundidad, color = Segmento))+
   facet_wrap(~ Segmento, ncol = 2, strip.position = "top", scales = "free_y") +
   geom_line(linewidth = 1.5) +
@@ -136,6 +136,6 @@ df_prof_long_labeled  %>%
         strip.text = element_text(size = 10, face = "bold"))
 
 # Guardar plot
-ggsave(filename = paste0(sample_name, "_profundidades.png"), device = "png", units = "cm", width = 24, height = 14)
+ggsave(filename = paste0(sample_name, "_profundidades.png"), plot = p1, device = "png", units = "cm", width = 24, height = 14)
 
 message("📄 Gráfica producida. Finalizando")
