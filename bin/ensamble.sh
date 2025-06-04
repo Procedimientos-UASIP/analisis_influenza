@@ -115,7 +115,7 @@ for KMER in $(seq "$KINI" 2 "$KFIN"); do
         if [[ -f "$TRUSTED_CONTIG" ]]; then
             # TRUSTED_CONTIG no está vacía y el archivo existe, usarlo como input confiable
             conda run -n ensamble spades.py -o "$OUTDIR" -1 "$READS_R1" -2 "$READS_R2" \
-            -s "$READS_U1" -s "$READS_U2" --careful -t "$THREADS" -k "$KMER" \
+            -s "$READS_U1" -s "$READS_U2" --careful --isolate -t "$THREADS" -k "$KMER" \
             --trusted-contigs "$TRUSTED_CONTIG" >/dev/null 2>&1
         else
             echo "ERROR: El archivo especificado en TRUSTED_CONTIG no existe: $TRUSTED_CONTIG" >&2
