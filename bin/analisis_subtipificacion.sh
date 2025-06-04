@@ -25,7 +25,7 @@ DB="/backup/DATABASES/NCBI/NT_VIRUSES/nt_viruses"
 
 # Ejecutar BLASTN
 echo "🚀 Ejecutando BLASTN..."
-blastn -db "$DB" -query "$FASTA" -out "$BLAST_OUT" -outfmt "6 stitle" -max_hsps 1 -num_threads 3
+blastn -db "$DB" -query "$FASTA" -out "$BLAST_OUT" -outfmt "6 stitle" -max_hsps 1 -num_threads 20
 
 # Verificar que haya resultados
 if [ ! -s "$BLAST_OUT" ]; then
