@@ -126,12 +126,12 @@ p1 <- df_limpio_2 %>%
   ) +
   scale_y_continuous(
     name = "Lecturas",
-    breaks = seq(0,1000000, 25000),
+    breaks = seq(0,1000000, 50000),
     labels = scales::comma,
     #sec.axis = sec_axis(~ . / factor_conversion, name = "Porcentaje (%)", breaks = breaks_secundario), 
     expand = expansion(mult = c(0,0.15))) +
   scale_fill_manual(
-    values = c("Usadas" = "#4DAF4A", "No usadas" = "#E41A1C"),
+    values = c("Usadas" = "#0072B2", "No usadas" = "#E69F00"),
     name = "Tipo de lectura"
   ) + 
   theme_bw() +
