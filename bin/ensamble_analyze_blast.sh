@@ -34,13 +34,14 @@ if [[ $line == K-mer* ]]; then
 
     elif [[ $line == *"segmento_${SEGMENT_NUMBER}"* ]]; then
         # Extraer valores clave
-        cov=$(awk -F"_cov_" '{print $2}' <<< "$line" | awk '{print $1}')
-        length=$(awk '{print $4}' <<< "$line")
-        slen=$(awk '{print $5}' <<< "$line")
         node=$(awk '{print $1}' <<< "$line")
+        cov=$(awk -F"_cov_" '{print $2}' <<< "$line" | awk '{print $1}')
+        #length=$(awk '{print $4}' <<< "$line")
+        length=$(awk -F'_length_' '{print $2}' <<< "$node" | awk -F'_cov_' '{print $1}')
+        slen=$(awk '{print $5}' <<< "$line")
         blast_reference=$(awk -F'|' '{print $2}' <<< "$line")
-        similarity_percentage=$(awk "BEGIN { printf \"%.4f\", ($length / $slen) * 100 }")
-
+        #similarity_percentage=$(awk "BEGIN { printf \"%.4f\", ($length / $slen) * 100 }")
+        similarity_percentage=$(awk '{print $3}' <<< "$line")
         start=$(awk '{print $9}' <<< "$line")
         end=$(awk '{print $10}' <<< "$line")
 
@@ -52,8 +53,14 @@ if [[ $line == K-mer* ]]; then
         fi
 
         # Seleccionar mejor hit basado en porcentaje y cobertura
-        if awk "BEGIN {exit !($similarity_percentage > $best_percentage || \
-            ($similarity_percentage == $best_percentage && $cov > $max_cov))}"; then
+        #if awk "BEGIN {exit !($similarity_percentage > $best_percentage || \
+        #    ($similarity_percentage == $best_percentage && $cov > $max_cov))}"; then
+        if awk -v l="$length" -v bl="$best_length" \
+        -v c="$cov" -v bc="$max_cov" \
+        -v s="$similarity_percentage" -v bs="$best_percentage" \
+            'BEGIN {
+                exit !(l > bl || (l == bl && c > bc) || (l == bl && c == bc && s > bs))
+            }'; then
 
             best_kmer="$CURRENT_KMER"
             best_node="$node"
