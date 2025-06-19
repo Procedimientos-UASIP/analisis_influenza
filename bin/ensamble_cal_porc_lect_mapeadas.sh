@@ -33,7 +33,8 @@ for i in {1..8}; do
     fi
 
     # Obtener cantidad de lecturas alineadas
-    LECTURAS_ENSAMBLADAS=$(samtools view -F 260 "$READS_USADAS_ENSAMBLE" | cut -f1 | sort | uniq | wc -l)
+    #-F 260 (256 + 4) quita alineamientos sin mapear y que no son primarios
+    LECTURAS_ENSAMBLADAS=$(samtools view -F 260 "$READS_USADAS_ENSAMBLE" | cut -f1 | sort | uniq | wc -l) 
 
     # Obtener cantidad de lecturas usadas para ensamblaje de novo
     LECTURAS_ALINEADAS=$(zgrep '^@' "${PATH_READS_POR_SEGMENTO}/s${i}_reads_r1.fq.gz" "${PATH_READS_POR_SEGMENTO}/s${i}_reads_u1.fq.gz" "${PATH_READS_POR_SEGMENTO}/s${i}_reads_u2.fq.gz" | cut -d' ' -f1 | sed 's/^@//' | sort | uniq | wc -l)
