@@ -73,14 +73,46 @@ if [[ $line == K-mer* ]]; then
         fi
     fi
 done 
-    
+
+# Extraer número de nodo de mejor match
+NODE_NUM=$(echo "$best_node" | grep -oP 'NODE_\K[^_]+(?=_length_)')
+
+# Obtener la descripcion de la referencia de blast
+BLAST_DESCRIPTION=$(blastdbcmd \
+  -db /backup/DATABASES/NCBI/NT_VIRUSES/nt_viruses \
+  -dbtype nucl \
+  -entry "${best_blast_reference}" \
+  -outfmt "%t" | head -n 1)
+
 # Cerrar el descriptor de archivo cuando ya no se necesite
 exec 3<&-
 
 #Guardar resultados en archivo con encabezado y tabulaciones
 {
-echo -e "KMER\tSEGMENT\tLENGTH\tSLEN\tPERCENTAGE\tCOV\tNODE\tBLAST_REFERENCE\tSUBJECT_STRAND"
-echo -e "${best_kmer}\t${SEGMENT_NUMBER}\t${best_length}\t${best_slen}\t${best_percentage}\t${max_cov}\t${best_node}\t${best_blast_reference}\t${best_strand}"
+echo -e "SEGMENT\
+\tKMER\
+\tNODE\
+\tLENGTH\
+\tSLEN\
+\tPERCENTAGE\
+\tCOV\
+\tSUBJECT_STRAND\
+\tBLAST_REFERENCE\
+\tBLAST_DESCRIPTION"
+
+echo -e "${SEGMENT_NUMBER}\
+\t${KMER}\
+\t${NODE_NUM}\
+\t${best_length}\
+\t${best_slen}\
+\t${best_percentage}\
+\t${max_cov}\
+\t${best_strand}\
+\t${best_blast_reference}\
+\t${BLAST_DESCRIPTION}"
+
+#echo -e "KMER\tSEGMENT\tLENGTH\tSLEN\tPERCENTAGE\tCOV\tNODE\tBLAST_REFERENCE\tSUBJECT_STRAND"
+#echo -e "${best_kmer}\t${SEGMENT_NUMBER}\t${best_length}\t${best_slen}\t${best_percentage}\t${max_cov}\t${best_node}\t${best_blast_reference}\t${best_strand}"
 } > "$RESULT_FILE"
 echo "✅ Resultados guardados en: $RESULT_FILE"
 
