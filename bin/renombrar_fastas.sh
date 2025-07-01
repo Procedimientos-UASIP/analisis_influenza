@@ -101,14 +101,15 @@ for dir in S[1-8]; do
             fi
 
             # Extraer header original
-            original_header=$(grep '^>' "$fasta_file")
+            ## original_header=$(grep '^>' "$fasta_file")
 
-            # Extraer longitud y cobertura con regex
-            longitud=$(echo "$original_header" | grep -oP 'length_\K[0-9]+')
-            cobertura=$(echo "$original_header" | grep -oP 'cov_\K[0-9.]+')
+            ## Extraer longitud y cobertura con regex
+            ## longitud=$(echo "$original_header" | grep -oP 'length_\K[0-9]+')
+            ## cobertura=$(echo "$original_header" | grep -oP 'cov_\K[0-9.]+')
 
             # Crear nuevo header
-            nuevo_header=">${SAMPLE_NAME}|Segment_${numero_segmento}_${protein_name}|A/${HOST}/${ORIGIN}/${YEAR}(${subtipo})|Length=${longitud}|Coverage=${cobertura}"
+            ## nuevo_header=">${SAMPLE_NAME}|Segment_${numero_segmento}_${protein_name}|A/${HOST}/${ORIGIN}/${YEAR}(${subtipo})|Length=${longitud}|Coverage=${cobertura}"
+            nuevo_header=">${SAMPLE_NAME}|Segment_${numero_segmento}_${protein_name}|A/${HOST}/${ORIGIN}/${YEAR}(${subtipo})"
 
             # Escribir nuevo header y secuencia en una sola línea
             awk -v header="$nuevo_header" '
