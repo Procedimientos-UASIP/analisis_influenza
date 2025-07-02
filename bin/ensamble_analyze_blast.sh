@@ -101,7 +101,7 @@ echo -e "SEGMENT\
 \tBLAST_DESCRIPTION"
 
 echo -e "${SEGMENT_NUMBER}\
-\t${KMER}\
+\t${best_kmer}\
 \t${NODE_NUM}\
 \t${best_length}\
 \t${best_slen}\
