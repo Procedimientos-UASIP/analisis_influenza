@@ -17,6 +17,7 @@ Usage: $0
    [ -o | --outdir ] Output directory
    [ --kini ] Shortest K-mer to use 
    [ --kfin ] Longest K-mer to use
+   [ --kstep ] Step size between K-mers
    [ --kmeroutdir ] Output directory for k-mers
    [ --blastoutput ] BLAST output filename
 EOF
@@ -24,7 +25,7 @@ EOF
 }
 
 # Colectar parámetros
-args=$(getopt -o ha:b:x:y:t:o: -l help,r1pair:,r2pair:,unpair1:,unpair2:,threads:,outdir:,kini:,kfin:,kmeroutdir:,blastoutput:,trusted: -- "$@")
+args=$(getopt -o ha:b:x:y:t:o: -l help,r1pair:,r2pair:,unpair1:,unpair2:,threads:,outdir:,kini:,kfin:,kstep:,kmeroutdir:,blastoutput:,trusted: -- "$@")
 
 # Si no hay parámetros, mostrar ayuda
 [[ $? -gt 0 ]] && usage && exit 1
@@ -43,6 +44,7 @@ while :; do
         --kmeroutdir)    KMER_OUTDIR=$2; shift 2 ;;
         --kini)          KINI=$2       ; shift 2 ;;
         --kfin)          KFIN=$2       ; shift 2 ;;
+        --kstep)         KSTEP=$2      ; shift 2 ;;
         --blastoutput)   BLAST_OUTPUT=$2; shift 2 ;;
         --trusted)   TRUSTED_CONTIG=$2; shift 2 ;;
         --) shift; break ;;
@@ -59,6 +61,7 @@ READS_U2=${READS_U2:-"undefined"}
 THREADS=${THREADS:-8}
 KINI=${KINI:-11}
 KFIN=${KFIN:-127}
+KSTEP=${KSTEP:-2}
 OUTDIR=${OUTDIR:-"OUTPUT"}
 KMER_OUTDIR=${KMER_OUTDIR:-"${OUTDIR}/KMERS"}
 BLAST_OUTPUT=${BLAST_OUTPUT:-"${OUTDIR}/BLAST_RESULTS"}
@@ -76,8 +79,8 @@ if [ $((KFIN % 2)) -eq 0 ] || [ "$KFIN" -lt 11 ] || [ "$KFIN" -gt 127 ]; then
 fi
 
 print_variables() {
-    printf "R1: %s\nR2: %s\nU1: %s\nU2: %s\nThreads: %s\nKINI: %s\nKFIN: %s\nOUTDIR: %s\nKMER_OUTDIR: %s\nBLAST_OUTPUT: %s\nTRUSTED_CONTIG: %s\n" \
-        "$READS_R1" "$READS_R2" "$READS_U1" "$READS_U2" "$THREADS" "$KINI" "$KFIN" "$OUTDIR" "$KMER_OUTDIR" "$BLAST_OUTPUT" "$TRUSTED_CONTIG"
+    printf "R1: %s\nR2: %s\nU1: %s\nU2: %s\nThreads: %s\nKINI: %s\nKSTEP: %s\nKFIN: %s\nOUTDIR: %s\nKMER_OUTDIR: %s\nBLAST_OUTPUT: %s\nTRUSTED_CONTIG: %s\n" \
+        "$READS_R1" "$READS_R2" "$READS_U1" "$READS_U2" "$THREADS" "$KINI" "$KSTEP" "$KFIN" "$OUTDIR" "$KMER_OUTDIR" "$BLAST_OUTPUT" "$TRUSTED_CONTIG"
 }
 
 # Llamada a la función de impresión
@@ -98,7 +101,7 @@ mkdir "$BLAST_OUTPUT"
 
 
 # Para cada uno de los kmeros impares entre el inicio y el final proporcionado
-for KMER in $(seq "$KINI" 2 "$KFIN"); do
+for KMER in $(seq "$KINI" "$KSTEP" "$KFIN"); do
     # Registrar tiempo de inicio del loop actual
     START_FOR=$SECONDS
 
