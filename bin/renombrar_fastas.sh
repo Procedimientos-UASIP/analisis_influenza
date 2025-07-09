@@ -64,7 +64,7 @@ fi
 SAMPLE_NAME=$(basename "$(dirname "$(dirname "$PWD")")")
 
 # Archivo de salida
-OUTPUT="${SAMPLE_NAME}_secuencias_renombradas.fna"
+OUTPUT="${SAMPLE_NAME}.fna"
 [ -f "$OUTPUT" ] && rm -f "$OUTPUT"
 touch "$OUTPUT"
 
