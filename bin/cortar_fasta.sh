@@ -5,7 +5,8 @@ set -euo pipefail
 # PARSEAR ARGUMENTOS
 # ===============================
 
-while [[ $# -gt 0 ]]; do
+while [[ $# -gt 0 ]]
+do
   case $1 in
     --n_inicio) N_INICIO="$2"; shift 2 ;;
     --n_final) N_FINAL="$2"; shift 2 ;;
@@ -15,7 +16,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # ===============================
-# DEFAULTS PARA MIN Y N, SI NO SE DECLARAN
+# DEFAULTS PARA N INICIAL, N FINAL, Y ARCHIVO DE SALIDA
 # ===============================
 
 N_INICIO="${N_INICIO:-15}"
@@ -41,6 +42,7 @@ do
   # Calcular inicio con extensión
   NEW_START=$(( START - $N_INICIO ))
 
+  # Calcular nueva longitud que tendrá la secuencia a extraer
   NEW_LENGTH=$(( LENGTH + $N_INICIO + $N_FINAL ))
 
   # Extraer subsecuencia
@@ -49,5 +51,4 @@ do
   # Guardar en archivo único
   echo ">$HEADER_CLEAN" >> "$OUTFILE"
   echo "$SUBSEQ" >> "$OUTFILE"
-
 done
