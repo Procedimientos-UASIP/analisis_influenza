@@ -62,4 +62,4 @@ for key in "${orden[@]}"; do
 done
 
 # Ejecuta el paste y añade columna POS.
-eval paste "${awk_commands[*]}" | awk '{ print NR "\t" $0 }' >> profundidades_finales.tsv
+eval paste "${awk_commands[*]}" | awk '{ print NR "\t" $0 }' >> prof.tsv
