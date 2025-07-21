@@ -128,21 +128,22 @@ for KMER in $(seq "$KINI" "$KSTEP" "$KFIN"); do
 
     # Construir archivos de salida
     SCAFFOLDS="$OUTDIR/scaffolds.fasta"
-    DEST_FILE="$KMER_OUTDIR/cak$KMER.fasta"
 
     # Si no se encuentra un scaffold para el kmero de la iteración
     if [[ ! -f "$SCAFFOLDS" ]]; then
-        echo "⚠️ [$(date '+%Y-%m-%d %H:%M:%S')] No se encontró '$SCAFFOLDS' para k=$KMER."
+        echo "⚠️ [$(date '+%Y-%m-%d %H:%M:%S')] No se encontró '$SCAFFOLDS' para k=$KMER. Se elimina carpeta correspondiente."
+
+        # Eliminar directorio para ese kmer
+        rm -rf "$OUTDIR/K$KMER/"
     else
     #Si se produjo un archivo de scaffold para el kmero de la iteracion
-        mv "$SCAFFOLDS" "$DEST_FILE"
-        echo "✅ [$(date '+%Y-%m-%d %H:%M:%S')] Scaffold encontrado. Se renombra y se mueve a: $DEST_FILE"
+        echo "✅ [$(date '+%Y-%m-%d %H:%M:%S')] Scaffolds encontrados."
 
         # Realizar BLAST con los primeros 3 scaffolds
         echo "🔍 [$(date '+%Y-%m-%d %H:%M:%S')] Realizando BLAST para k-mer = $KMER..."
         {
             echo "K-mer: $KMER"
-            conda run -n base seqkit head -n 3 "$DEST_FILE" > temp.fa && \
+            conda run -n base seqkit head -n 3 "$SCAFFOLDS" > temp.fa && \
             conda run -n alineamiento blastn \
                 -outfmt "6 qseqid sseqid pident length slen qlen qstart qend sstart send" \
                 -max_target_seqs 1 -max_hsps 1 \
