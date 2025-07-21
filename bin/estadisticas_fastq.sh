@@ -7,7 +7,7 @@ if [ $# -ne 1 ]; then
 fi
 
 FASTQ="$1"
-OUTPUT="estadisticas"
+OUTPUT="estadisticas.tsv"
 
 # Verificar que el archivo existe
 if [ ! -f "$FASTQ" ]; then
