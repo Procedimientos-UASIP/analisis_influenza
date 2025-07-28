@@ -59,8 +59,9 @@ do
         
         # Imprimir todas las lineas de la variable del filtrado (como si leyera un archivo)
         # Se guarda el valor de cada columna de cada línea en una variable
+        # Se silencian variables que inician con _
         printf "%s\n" "$SEG_LINES" | \
-        while IFS=$'\t' read -r SEG QUERY SUBJECT ALIG_LEN Q_LEN S_LEN PIDENT Q_START Q_END S_START S_END S_TITLE
+        while IFS=$'\t' read -r SEG QUERY _SUBJECT _ALIG_LEN _Q_LEN _S_LEN _PIDENT Q_START Q_END S_START S_END _S_TITLE
         do #Por cada linea (match)
             # Imprimir encabezado FASTA solo una vez
             if [ "$FLAG_HEADER" -eq 0 ]; then
