@@ -61,9 +61,12 @@ done
 # ORDENAR POR SEGMENTO Y POR POSICIÓN DE INICIO EN SUBJECT
 # ============================================
 
+# Guardar encabezado de la tabla
+head -n 1 "$OUTPUT" > header.tmp
+
 # Seleccionar columnas, excepto la de bitscore.
 # Ordenar por columna 1 y luego por columna 10 numéricamente. Respetar líneas en blanco.
-cut -f1,2,4-13 "$OUTPUT" | LC_ALL=C sort -t $'\t' -k1,1 -k10,10n | awk -F'\t' '
+sed -n '2,$p' "$OUTPUT" | cut -f1,2,4-13 | LC_ALL=C sort -t $'\t' -k1,1 -k10,10n | awk -F'\t' '
 BEGIN { OFS = FS; prev = "" }
 {
     if (prev != "" && $1 != prev) {
@@ -71,8 +74,11 @@ BEGIN { OFS = FS; prev = "" }
     }
     print
     prev = $1
-} ' > "$OUTPUT_SORT"s
+} ' > body.tmp
 
-# Eliminar archivo sin ordenar
-rm "$OUTPUT"
+# Unir encabezado a la tabla ordenada
+cat header.tmp body.tmp > "$OUTPUT_SORT"
+
+# Eliminar archivo sin ordenar y temporales
+rm "$OUTPUT" header.tmp body.tmp
 
