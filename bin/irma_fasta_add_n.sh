@@ -20,23 +20,20 @@ done
 # Iniciar archivo de salida
 true >final.fasta
 
-for i in {1..8}
+for SEG in {1..8}
 do
-    # Crear el nombre del segmento para extraer del fasta
-    SEG="segment_$i"
-    
     # Obtener las lineas que empiezan con el segmento n, de la tabla de blast de los resultados de IRMA
     SEG_LINES=$(grep -P "^$SEG" "$TABLE_BLAST")
 
     # Obtener la identidad del query (A_XXX_XX)
     QUERY=$(printf "%s\n" "$SEG_LINES" | cut -f2 | uniq)
-
+    
     # Contar las lineas del filtrado
     COUNT=$(printf "%s\n" "$SEG_LINES" | wc -l)
 
     # Obtener el nombre del fasta que almacena la secuencia a procesar
     FASTA="${QUERY}.fasta"
-    
+
     # Si sólo hay un match por subject, imprimir el header y la secuencia.
     if [ "$COUNT" -eq 1 ]
     then
