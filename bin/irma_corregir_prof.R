@@ -78,5 +78,5 @@ tabla_ajustada <- as_tibble(lista_coberturas)
 # Agregar columna Posicion
 tabla_ajustada <- tibble(Posicion = 1:max_len) |> bind_cols(tabla_ajustada)
 
-write_tsv(tabla_ajustada, "./test_table_prof.tsv", na = "")
+write_tsv(tabla_ajustada, "./table_prof_corr.tsv", na = "")
 
