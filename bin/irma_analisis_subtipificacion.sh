@@ -17,7 +17,7 @@ fi
 # Extraer nombre de la carpeta actual (e.g., S1, S2, ...)
 CARPETA_ACTUAL=$(basename "$PWD")
 CARPETA_TMP=$(mktemp -d)
-ARCHIVO_SALIDA="${CARPETA_ACTUAL}_subtipos_top5.tsv"
+ARCHIVO_SALIDA="Analisis_subtipos_top5.tsv"
 
 
 # Archivo temporal
