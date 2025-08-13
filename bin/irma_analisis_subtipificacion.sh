@@ -15,17 +15,13 @@ if [ ! -f "$FASTA" ]; then
 fi
 
 # Extraer nombre de la carpeta actual (e.g., S1, S2, ...)
-CARPETA_ACTUAL=$(basename "$PWD")
 CARPETA_TMP=$(mktemp -d)
 ARCHIVO_SALIDA="Analisis_subtipos_top5.tsv"
-
 
 # Archivo temporal
 BLAST_OUT=$(mktemp)
 TMP_TABLE=$(mktemp)
 DB="/backup/DATABASES/NCBI/NT_VIRUSES/nt_viruses"
-
-
 
 # Separar secuencias individuales del FASTA
 echo "📦 Separando secuencias individuales..."
