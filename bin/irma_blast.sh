@@ -13,7 +13,7 @@ OUTPUT_SORT="blast_best_hit_hsp_sorted.tsv"
 # ============================================
 
 # Crear archivo con nombres de columnas
-echo "SEGMENT QUERY BITSCORE SUBJECT ALIG_LEN Q_LEN S_LEN PIDENT Q_START Q_END S_START S_END S_TITLE " | tr ' ' '\t' >"$OUTPUT"
+echo "SEGMENT QUERY SUBJECT ALIG_LEN Q_LEN S_LEN PIDENT Q_START Q_END S_START S_END S_TITLE " | tr ' ' '\t' >"$OUTPUT"
 
 # Para cada fasta producido por IRMA
 for fasta in A_*.fasta
