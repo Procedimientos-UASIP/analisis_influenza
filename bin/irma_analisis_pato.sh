@@ -58,7 +58,7 @@ while read -r header && read -r seq; do
         tmp_fasta_frame=$(mktemp)
         echo -e ">$ID\n$SEQ_FRAME" > "$tmp_fasta_frame"
 
-        TRANS=$(seqkit translate -F "$tmp_fasta_frame" | tail -n +2)
+        TRANS=$(seqkit translate -F "$tmp_fasta_frame" | seqkit seq -s)
 
         MATCH=$(buscar_motivo_mas_corto "$TRANS")
 
@@ -93,7 +93,7 @@ while read -r header && read -r seq; do
         tmp_fasta_frame=$(mktemp)
         echo -e ">$ID\n$SEQ_FRAME" > "$tmp_fasta_frame"
 
-        TRANS=$(seqkit translate -F "$tmp_fasta_frame" | tail -n +2)
+        TRANS=$(seqkit translate -F "$tmp_fasta_frame" | seqkit seq -s)
 
         MATCH=$(buscar_motivo_mas_corto "$TRANS")
 
