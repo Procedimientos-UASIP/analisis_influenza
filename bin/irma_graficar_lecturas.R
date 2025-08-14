@@ -50,7 +50,7 @@ my_colors <- c(
 plot_reads <- df4_clean %>%
   ggplot(aes(x = Segment, y = Reads)) +
   geom_col(fill = my_colors) +
-  geom_text(aes(label = scales::comma(Reads)), vjust = -0.5, size = 3.5) +
+  geom_text(aes(label = scales::comma(Reads)), vjust = -0.5, size = 5) +
   scale_y_continuous(labels = scales::comma, expand = expansion(mult = c(0,0.1))) +
   labs(title = "Lecturas usadas en ensamblaje",
        x = "Segmento",
