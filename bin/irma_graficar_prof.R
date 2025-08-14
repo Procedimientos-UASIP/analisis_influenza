@@ -86,14 +86,14 @@ message("💻 Limpiando y procesando")
 # Reordenar columnas y renombrar
 df_prof <- df_prof %>% 
   rename("Posición" = "Posicion",
-         "S1(PB2)" = "A_PB2",
-         "S2(PB1)" = "A_PB1",
-         "S3(PA)" = "A_PA",
-         "S4(HA)" = "A_HA_H7",
-         "S5(NP)" = "A_NP",
-         "S6(NA)" = "A_NA_N3",
-         "S7(M1, M2)" = "A_MP",
-         "S8(Ns1, Ns2)" = "A_NS")
+         "S1(PB2)" = 2,
+         "S2(PB1)" = 3,
+         "S3(PA)" = 4,
+         "S4(HA)" = 5,
+         "S5(NP)" = 6,
+         "S6(NA)" = 7,
+         "S7(M1, M2)" = 8,
+         "S8(Ns1, Ns2)" = 9)
 
 # Transformar, ordenar y filtrar
 df_prof_long <- df_prof %>% 
@@ -131,7 +131,7 @@ p1 <- df_prof_long_labeled  %>%
   facet_wrap(~ Segmento, ncol = 2, strip.position = "top", scales = "free_y") +
   geom_line(linewidth = 1.5) +
   scale_color_manual(values = my_colors) +
-  labs(title = "Profundidad de secuenciación de los segmentos de Influenza tipo A",
+  labs(title = "Profundidad de secuenciación de segmentos de IA-A",
        subtitle = paste0( "Muestra: ",sample_name)) +
   scale_x_continuous(breaks = seq (0,max(df_prof_long_labeled$Posición), 100), labels = scales::comma) +
   scale_y_continuous(labels = scales::comma, limits = c(1, NA)) +
