@@ -18,7 +18,7 @@ done
 # ============================================
 
 # Iniciar archivo de salida
-true >final.fasta
+# true >final.fasta
 
 for SEG in {1..8}
 do
