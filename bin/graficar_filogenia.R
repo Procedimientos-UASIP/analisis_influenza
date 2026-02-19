@@ -35,10 +35,10 @@ for (pkg in c("Biostrings", "tidyverse", "ggtree", "optparse")) {
 # ---------------------- #
 
 option_list <- list(
-  make_option(c("--tree_HA"), dest = "input_file", type = "character", help = "Archivo de filogenia con bootstrap (ej: CPA-XXXXX-XX_HA_tree.contree)"),
-  make_option(c("--tree_NA"), dest = "input_file", type = "character", help = "Archivo de filogenia con bootstrap (ej: CPA-XXXXX-XX_NA_tree.contree)"),
-  make_option(c("--aln_HA"), dest = "input_file", type = "character", help = "Archivo de alineamiento (ej: NCBI_virus_HA.aln)"),
-  make_option(c("--aln_HA"), dest = "input_file", type = "character", help = "Archivo de alineamiento (ej: NCBI_virus_NA.aln)"),
+  make_option(c("--tree_HA"), dest = "tree_HA", type = "character", help = "Archivo de filogenia con bootstrap (ej: CPA-XXXXX-XX_HA_tree.contree)"),
+  make_option(c("--tree_NA"), dest = "tree_NA", type = "character", help = "Archivo de filogenia con bootstrap (ej: CPA-XXXXX-XX_NA_tree.contree)"),
+  make_option(c("--aln_HA"), dest = "aln_HA", type = "character", help = "Archivo de alineamiento (ej: NCBI_virus_HA.aln)"),
+  make_option(c("--aln_NA"), dest = "aln_NA", type = "character", help = "Archivo de alineamiento (ej: NCBI_virus_NA.aln)"),
   make_option(c("--muestra"), dest = "muestra", type = "character", help = "Nombre de la muestra a procesar")
 )
 
@@ -47,10 +47,10 @@ opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
 # Verificar que ambos argumentos fueron suministrados
-if (is.null(opt$input_file) || is.null(opt$muestra)) {
+if (is.null(opt$tree_HA) || is.null(opt$tree_NA) || is.null(opt$aln_HA) || is.null(opt$aln_NA) || is.null(opt$muestra)) {
   stop("Faltan argumentos. Debes proporcionar los archivos de filogenia con bootstrap, los alineamientos con la muestra problema, y el nombre de la muestra. 
   Ejemplo: ./graficar_filogenia.R 
-  --input_HA CPA-XXXXX-XX_HA.contree --input_NA CPA-XXXXX-XX_NA.contree 
+  --tree_HA CPA-XXXXX-XX_HA.contree --tree_NA CPA-XXXXX-XX_NA.contree 
   --aln_HA NCBI_virus_HA.aln --aln_NA NCBI_virus_NA.aln
   --muestra CPA-XXXX-XX", call. = FALSE)
 }
@@ -159,7 +159,7 @@ p <- ggtree(tree_mid, layout = "fan", open.angle = 180) %<+% metadata +
           legend.title = element_text(size = 20),
           legend.box.margin = margin(t = -350))
 
-ggsave("HA_tree.pdf", plot = p, device = "pdf", width = 12, height = 8, units = "in")
+ggsave(paste0(sample_name, "_HA_tree.pdf"), plot = p, device = "pdf", width = 12, height = 8, units = "in")
 
 
 # ---------------------- #
@@ -231,4 +231,4 @@ p <- ggtree(tree_mid, layout = "fan", open.angle = 180) %<+% metadata +
         legend.title = element_text(size = 20),
         legend.box.margin = margin(t = -350))
 
-ggsave("./PLOTS/NA_tree.pdf", plot = p, device = "pdf", width = 13, height = 8, units = "in")
+ggsave(paste0(sample_name, "_NA_tree.pdf"), plot = p, device = "pdf", width = 13, height = 8, units = "in")
