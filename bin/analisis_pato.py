@@ -21,9 +21,16 @@ def search_motif(seq, sign):
         # Extraer el match más corto, si no hay se queda como cadena vacía
         shortest = min(matches, key=len) if matches else ""
         
+        # Clasificar como HPAI o LPAI basado en el número de aminoácidos básicos
+        pato = ""
+        if shortest:
+            # Contar aminoácidos básicos: Arginina (R), Lisina (K), Histidina (H)
+            basic_count = sum(shortest.count(aa) for aa in "RKH")
+            pato = "HPAI" if basic_count >= 4 else "LPAI"
+
         # Etiquetar marco y guardar como tupla
         label = f"Frame {sign}{i+1}"
-        results.append((label, shortest))
+        results.append((label, shortest, pato))
     return results
 
 def analysis_pato(fasta_file):
@@ -50,11 +57,11 @@ def analysis_pato(fasta_file):
 
     # Tabular resultados
     print("Análisis de patogenicidad basado en el motivo P*G[LI]F")
-    print("-" * 30)
-    print(f"{'ORF':<8} | {'Motivo encontrado'}")
-    print("-" * 30)
-    for frame, motif in table_results:
-        print(f"{frame:<8} | {motif}")
+    print("-" * 50)
+    print(f"{'ORF':<8} | {'Patogenicidad':<15} | {'Motivo encontrado'}")
+    print("-" * 50)
+    for frame, motif, pato in table_results:
+        print(f"{frame:<8} | {pato:<15} | {motif}")
 
 if __name__ == "__main__":
     # Verificar que se haya pasado un argumento
