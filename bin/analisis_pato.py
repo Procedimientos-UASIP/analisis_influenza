@@ -56,12 +56,13 @@ def analysis_pato(fasta_file):
     table_results += search_motif(dna_reverse, "-")
 
     # Tabular resultados
-    print("Análisis de patogenicidad basado en el motivo P*G[LI]F")
+    print("\nAnálisis de patogenicidad basado en el motivo P*G[LI]F")
     print("-" * 50)
     print(f"{'ORF':<8} | {'Patogenicidad':<15} | {'Motivo encontrado'}")
     print("-" * 50)
     for frame, motif, pato in table_results:
         print(f"{frame:<8} | {pato:<15} | {motif}")
+    print("-" * 50 + "\n")
 
 if __name__ == "__main__":
     # Verificar que se haya pasado un argumento
