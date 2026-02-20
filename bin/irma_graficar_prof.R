@@ -1,5 +1,3 @@
-#!/usr/bin/env Rscript
-
 # ---------------------- #
 # 1. VERIFICACIÓN DE LIBRERIAS
 # ---------------------- #
