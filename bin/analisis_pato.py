@@ -9,6 +9,42 @@ from Bio import BiopythonWarning
 # Suppress Biopython warnings
 warnings.simplefilter('ignore', BiopythonWarning)
 
+def get_longest_cds(dna_fasta_file):
+    # Read DNA sequence
+    reg = SeqIO.read(dna_fasta_file, "fasta")
+    dna_seq = reg.seq
+    
+    # Generate dict with seq and complement
+    strands = {
+        "forward": dna_seq,
+        "reverse": dna_seq.reverse_complement()
+    }
+    
+    longest_cds = ""
+    
+    for strand_name, strand in strands.items():
+        for orf in range(3):
+            # Cut sequence to a multiple of 3
+            len_corrected = ((len(strand) - orf) // 3) * 3
+            orf_seq = strand[orf : orf + len_corrected]
+            
+            # Translate with standard genetic code
+            translation = orf_seq.translate(table=1)
+            
+            # Divide tranlation by stop codons 
+            orfs = translation.split("*")
+
+            # Get longest cds
+            for orf in orfs:
+                # Uncomment to make sure that cds must begin with Met
+                # if "M" in orf:
+                #     orf = orf[orf.find("M"):]
+                
+                if len(orf) > len(longest_cds):
+                    longest_cds = orf
+
+    return longest_cds
+
 def search_motif(seq, sign):
     # The logic of the analysis implies that results must be placed in a list
     results = []
@@ -38,21 +74,18 @@ def main():
     parser = argparse.ArgumentParser(
         description="Cleavage site analysis for avian influenza pathogenicity."
     )
-    
-    parser.add_argument("--faa", required=True, help="Path to fasta with HA protein sequence (.faa)")
-    parser.add_argument("--fna", required=True, help="Path to fasta with HA nucleotide sequence (.fna)")
+
     parser.add_argument("--db", required=True, help="Path to csv containing the database of HA cleavage sites.")
+    parser.add_argument("--fna", required=True, help="Path to fasta with HA nucleotide sequence (.fna)")
 
     args = parser.parse_args()
 
     # --- Search in OFFLU cleavage site lists ---
     try:
-        seq_reg = SeqIO.read(args.faa, "fasta")
+        seq_protein = str(get_longest_cds(args.fna))
     except Exception as e:
-        sys.exit(f"Error reading protein fasta file (--faa): {e}")
+        sys.exit(f"Error reading fasta file (--fna): {e}")
         
-    seq_protein = str(seq_reg.seq)
-
     # Load OFFLU data
     df = pd.read_csv(args.db)
     patterns = df["cleavage_site"].unique().tolist()
