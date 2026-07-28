@@ -1,74 +1,117 @@
-import sys
-import os
-from Bio import SeqIO
 import re
+import sys
+import argparse
+import pandas as pd
 import warnings
+from Bio import SeqIO
 from Bio import BiopythonWarning
 
-# Suprimir advertencias de Biopython
+# Suppress Biopython warnings
 warnings.simplefilter('ignore', BiopythonWarning)
 
 def search_motif(seq, sign):
-    # Los resultados se depositaran como lista de tuplas
+    # The logic of the analysis implies that results must be placed in a list
     results = []
     for i in range(3):
         prot_seq = str(seq[i:].translate())
         
-        # Establecer patron y buscar coincidencias
+        # Establish pattern and search for matches
         pattern = r"P[^P]+?G[LI]F"
         matches = re.findall(pattern, prot_seq)
         
-        # Extraer el match más corto, si no hay se queda como cadena vacía
+        # Extract shortest motif or keep result empty
         shortest = min(matches, key=len) if matches else ""
         
-        # Clasificar como HPAI o LPAI basado en el número de aminoácidos básicos
+        # Predict pathogenicity by count of basic residues (Arg or Lys) in cleavage site
         pato = ""
         if shortest:
-            # Contar aminoácidos básicos: Arginina (R), Lisina (K), Histidina (H)
-            basic_count = sum(shortest.count(aa) for aa in "RKH")
+            basic_count = sum(shortest.count(aa) for aa in "RK")
             pato = "HPAI" if basic_count >= 4 else "LPAI"
 
-        # Etiquetar marco y guardar como tupla
+        # Add frame and save data as tupple
         label = f"Frame {sign}{i+1}"
         results.append((label, shortest, pato))
     return results
 
-def analysis_pato(fasta_file):
-    # --- Leer y verificar fasta ---
-    if not os.path.exists(fasta_file):
-        print(f"\nError: El archivo '{fasta_file}' no existe.\n")
-        return
+def main():
+    # Config parser
+    parser = argparse.ArgumentParser(
+        description="Cleavage site analysis for avian influenza pathogenicity."
+    )
+    
+    parser.add_argument("--faa", required=True, help="Path to fasta with HA protein sequence (.faa)")
+    parser.add_argument("--fna", required=True, help="Path to fasta with HA nucleotide sequence (.fna)")
+    parser.add_argument("--db", required=True, help="Path to csv containing the database of HA cleavage sites.")
 
+    args = parser.parse_args()
+
+    # --- Search in OFFLU cleavage site lists ---
     try:
-        # Intentar leer el archivo como FASTA
-        record = SeqIO.read(fasta_file, "fasta")
-    except ValueError as e:
-        print(f"\nError de validación: El archivo no es un FASTA válido o tiene más de una secuencia.\n")
-        return
-    # ---------------------------
+        seq_reg = SeqIO.read(args.faa, "fasta")
+    except Exception as e:
+        sys.exit(f"Error reading protein fasta file (--faa): {e}")
+        
+    seq_protein = str(seq_reg.seq)
 
-    # Extraer secuencia y generar complementaria
-    dna_forward = record.seq
-    dna_reverse = record.seq.reverse_complement()
+    # Load OFFLU data
+    df = pd.read_csv(args.db)
+    patterns = df["cleavage_site"].unique().tolist()
 
-    # Hacer análisis en cada motivo. Usar funcion definida anteriormente
-    table_results = search_motif(dna_forward, "+")
-    table_results += search_motif(dna_reverse, "-")
+    # Search for pattern
+    pattern_in_list = False
+    for pattern in patterns:
+        if pattern in seq_protein:
+            pattern_in_list = True
+            break
 
-    # Tabular resultados
-    print("\nAnálisis de patogenicidad basado en el motivo P*G[LI]F")
-    print("-" * 50)
-    print(f"{'ORF':<8} | {'Patogenicidad':<15} | {'Motivo encontrado'}")
-    print("-" * 50)
-    for frame, motif, pato in table_results:
-        print(f"{frame:<8} | {pato:<15} | {motif}")
-    print("-" * 50 + "\n")
+    # --- If cleavage site is found in OFFLU list, print data ---
+    if pattern_in_list:
+        # Filter df according to pattern found
+        df_filtrado = df[df["cleavage_site"] == pattern]
+
+        # Header of results
+        print(f"\nCleavage site found in OFFLU list: {pattern}")
+        print("\n" + "="*40)
+        print("DATA REPORT")
+        print("="*40)
+
+        # Print each column of the df in a readable format
+        for col in df_filtrado.columns:
+            data_offlu = []
+            for val in df_filtrado[col].tolist():
+                # Convert float to int
+                if isinstance(val, float) and val.is_integer():
+                    data_offlu.append(int(val))
+                else:
+                    data_offlu.append(val)
+            print(f"{col.capitalize()}: {data_offlu}")
+        print("="*40)
+
+    # --- If cleavage site is not found in OFFLU list, perform a regex search ---
+    if not pattern_in_list:
+        print("\nCleavage site not found in OFFLU list.")
+        print("\nMaking hard search using regular expressions.")
+        try:
+            seq_reg = SeqIO.read(args.fna, "fasta")
+        except Exception as e:
+            sys.exit(f"Error reading nucleotide fasta file (--fna): {e}")
+        
+        # Extract sequence and reverse complement
+        dna_forward = seq_reg.seq
+        dna_reverse = seq_reg.seq.reverse_complement()
+
+        # Perform search in each ORF
+        table_results = search_motif(dna_forward, "+")
+        table_results += search_motif(dna_reverse, "-")
+
+        # Tabulate results
+        print("\nPathogenicity analysis based on the pattern: P*G[LI]F")
+        print("=" * 50)
+        print(f"{'ORF':<8} | {'Pathogenicity':<15} | {'Motif found'}")
+        print("=" * 50)
+        for frame, motif, pato in table_results:
+            print(f"{frame:<8} | {pato:<15} | {motif}")
+        print("=" * 50 + "\n")
 
 if __name__ == "__main__":
-    # Verificar que se haya pasado un argumento
-    if len(sys.argv) > 1:
-        analysis_pato(sys.argv[1])
-    else:
-        print("Error: Por favor proporciona la ruta del archivo FASTA.")
-        print("Uso: python script.py ruta/al/archivo.fa")
-
+    main()
